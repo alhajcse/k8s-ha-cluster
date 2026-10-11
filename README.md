@@ -27,7 +27,10 @@
 
 ## Architecture Overview
 
+![K8s HA Architecture](docs/k8s-ha-architecture.svg)
+
 ```
+![K8s HA Cluster Architecture](docs/k8s-ha-cluster-architecture.svg)
 ┌─────────────────────────────────────────────────────────────┐
 │                    CLIENT / ADMIN ACCESS                     │
 │                  kubectl · SSH · Browser UI                  │
