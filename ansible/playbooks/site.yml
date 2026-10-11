@@ -1,0 +1,20 @@
+---
+# ============================================================
+# Complete VM Preparation
+# ============================================================
+
+# Stage 1: সব VM-এ common + firewall
+- name: "Stage 1 — Common OS + Firewall"
+  hosts: all
+  become: yes              # sudo দিয়ে চালাবে
+  roles:
+    - common
+    - firewall
+
+# Stage 2: শুধু K8s nodes-এ containerd + tools
+- name: "Stage 2 — Container runtime + K8s tools"
+  hosts: k8s_cluster
+  become: yes
+  roles:
+    - containerd
+    - k8s-tools

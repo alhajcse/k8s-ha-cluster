@@ -1,0 +1,62 @@
+---
+# ============================================================
+# containerd Install
+# ============================================================
+
+# ---------- 1. Keyring folder ----------
+- name: "Create keyrings directory"
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+# ---------- 2. Docker GPG key ----------
+- name: "Docker GPG key add"
+  shell: |
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+      gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  args:
+    creates: /etc/apt/keyrings/docker.gpg   # if already skip
+
+# ---------- 3. Docker repo ----------
+- name: "Docker repo add"
+  apt_repository:
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    filename: docker
+    state: present
+
+# ---------- 4. containerd install ----------
+- name: "containerd.io install"
+  apt:
+    name: containerd.io
+    state: present
+    update_cache: yes
+
+# ---------- 5. Default config ----------
+- name: "containerd default config তৈরি"
+  shell: containerd config default > /etc/containerd/config.toml
+  args:
+    creates: /etc/containerd/config.toml   # already থাকলে skip
+
+# ---------- 6. SystemdCgroup enable ----------
+- name: "SystemdCgroup = true (kubelet-এর সাথে মিল)"
+  replace:
+    path: /etc/containerd/config.toml
+    regexp: 'SystemdCgroup = false'
+    replace: 'SystemdCgroup = true'
+  notify: restart containerd
+
+# ---------- 7. Sandbox image ----------
+- name: "Sandbox image set (pause container)"
+  replace:
+    path: /etc/containerd/config.toml
+    regexp: 'sandbox_image = ".*"'
+    replace: 'sandbox_image = "registry.k8s.io/pause:3.9"'
+  notify: restart containerd
+
+# ---------- 8. Enable + start ----------
+- name: "containerd চালু + enable"
+  systemd:
+    name: containerd
+    state: started
+    enabled: yes

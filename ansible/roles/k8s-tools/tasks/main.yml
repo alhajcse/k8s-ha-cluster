@@ -1,0 +1,46 @@
+---
+# ============================================================
+# Kubernetes Tools Install
+# ============================================================
+
+# ---------- 1. K8s GPG key ----------
+- name: "K8s GPG key add"
+  shell: |
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | \
+      gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+  args:
+    creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+# ---------- 2. K8s repo ----------
+- name: "K8s repo add"
+  apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /"
+    filename: kubernetes
+    state: present
+
+# ---------- 3. Install tools ----------
+- name: "kubelet, kubeadm, kubectl install"
+  apt:
+    name:
+      - kubelet         # প্রতিটা VM-এ চলে
+      - kubeadm         # cluster তৈরি করে
+      - kubectl         # cluster command দেয়
+    state: present
+    update_cache: yes
+
+# ---------- 4. Hold packages ----------
+- name: "Packages hold (auto-update বন্ধ)"
+  dpkg_selections:
+    name: "{{ item }}"
+    selection: hold
+  loop:
+    - kubelet
+    - kubeadm
+    - kubectl
+
+# ---------- 5. Enable kubelet ----------
+- name: "kubelet enable"
+  systemd:
+    name: kubelet
+    state: started
+    enabled: yes

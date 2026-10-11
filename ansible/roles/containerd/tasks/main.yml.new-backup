@@ -1,0 +1,196 @@
+---
+# ============================================================
+# containerd — Complete Production Setup
+# Prevention: CRI disabled, sandbox missing, wrong config
+# ============================================================
+
+# ---------- STEP 1: Install containerd.io ----------
+- name: "Create keyrings directory"
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: "Add Docker GPG key"
+  shell: |
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+      gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  args:
+    creates: /etc/apt/keyrings/docker.gpg
+
+- name: "Add Docker repository"
+  apt_repository:
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    filename: docker
+    state: present
+
+- name: "Install containerd.io"
+  apt:
+    name: containerd.io
+    state: present
+    update_cache: yes
+
+# ---------- STEP 2: Stop containerd before config ----------
+- name: "Stop containerd service"
+  systemd:
+    name: containerd
+    state: stopped
+  ignore_errors: yes
+
+# ---------- STEP 3: Remove old (potentially wrong) config ----------
+- name: "Backup existing config"
+  copy:
+    src: /etc/containerd/config.toml
+    dest: /etc/containerd/config.toml.backup
+    remote_src: yes
+  ignore_errors: yes
+
+- name: "Remove old config.toml"
+  file:
+    path: /etc/containerd/config.toml
+    state: absent
+
+# ---------- STEP 4: Generate FULL default config ----------
+- name: "Generate full default config (290+ lines)"
+  shell: containerd config default > /etc/containerd/config.toml
+  args:
+    creates: /etc/containerd/config.toml
+
+# ---------- STEP 5: VALIDATE config length ----------
+- name: "Verify config has full content (>100 lines)"
+  shell: |
+    LINES=$(wc -l < /etc/containerd/config.toml)
+    if [ "$LINES" -lt 100 ]; then
+      echo "ERROR: Config too short ($LINES lines)"
+      exit 1
+    fi
+    echo "OK: $LINES lines"
+  register: config_check
+  changed_when: false
+  failed_when: config_check.rc != 0
+
+- name: "Show config line count"
+  debug:
+    msg: "✅ Config: {{ config_check.stdout }}"
+
+# ---------- STEP 6: Set SystemdCgroup = true ----------
+- name: "Set SystemdCgroup = true"
+  replace:
+    path: /etc/containerd/config.toml
+    regexp: 'SystemdCgroup = false'
+    replace: 'SystemdCgroup = true'
+  register: systemd_cgroup_change
+
+# ---------- STEP 7: VERIFY SystemdCgroup change ----------
+- name: "Verify SystemdCgroup is set"
+  shell: grep -q "SystemdCgroup = true" /etc/containerd/config.toml
+  register: systemd_verify
+  changed_when: false
+  failed_when: systemd_verify.rc != 0
+
+# ---------- STEP 8: Enable CRI plugin ----------
+- name: "Enable CRI (disabled_plugins = [])"
+  replace:
+    path: /etc/containerd/config.toml
+    regexp: '^disabled_plugins = .*'
+    replace: 'disabled_plugins = []'
+  register: cri_change
+
+# ---------- STEP 9: VERIFY CRI enabled ----------
+- name: "Verify CRI is enabled"
+  shell: grep -q "disabled_plugins = \[\]" /etc/containerd/config.toml
+  register: cri_verify
+  changed_when: false
+  failed_when: cri_verify.rc != 0
+
+# ---------- STEP 10: Set sandbox_image (handle both quote styles) ----------
+- name: "Check if single-quote CRI section exists"
+  shell: grep -q "plugins.'io.containerd.grpc.v1.cri'" /etc/containerd/config.toml
+  register: single_quote_check
+  changed_when: false
+  failed_when: false
+
+- name: "Add sandbox_image (single-quote pattern)"
+  replace:
+    path: /etc/containerd/config.toml
+    regexp: "\\[plugins\\.'io\\.containerd\\.grpc\\.v1\\.cri'\\]"
+    replace: "[plugins.'io.containerd.grpc.v1.cri']\n    sandbox_image = \"registry.k8s.io/pause:3.9\""
+  when: single_quote_check.rc == 0
+
+- name: "Check if double-quote CRI section exists"
+  shell: grep -q 'plugins."io.containerd.grpc.v1.cri"' /etc/containerd/config.toml
+  register: double_quote_check
+  changed_when: false
+  failed_when: false
+
+- name: "Add sandbox_image (double-quote pattern)"
+  replace:
+    path: /etc/containerd/config.toml
+    regexp: '\[plugins\."io\.containerd\.grpc\.v1\.cri"\]'
+    replace: '[plugins."io.containerd.grpc.v1.cri"]\n    sandbox_image = "registry.k8s.io/pause:3.9"'
+  when: double_quote_check.rc == 0
+
+# ---------- STEP 11: VERIFY sandbox_image ----------
+- name: "Verify sandbox_image is set"
+  shell: grep -q "sandbox_image" /etc/containerd/config.toml
+  register: sandbox_verify
+  changed_when: false
+  failed_when: sandbox_verify.rc != 0
+
+# ---------- STEP 12: Remove duplicate sandbox_image (if any) ----------
+- name: "Check for duplicate sandbox_image"
+  shell: grep -c "sandbox_image" /etc/containerd/config.toml
+  register: sandbox_count
+  changed_when: false
+
+- name: "Remove duplicate sandbox_image"
+  shell: |
+    awk '!seen[$0]++ || !/sandbox_image/' /etc/containerd/config.toml > /tmp/config.toml
+    mv /tmp/config.toml /etc/containerd/config.toml
+  when: sandbox_count.stdout | int > 1
+
+# ---------- STEP 13: Start containerd ----------
+- name: "Start and enable containerd"
+  systemd:
+    name: containerd
+    state: started
+    enabled: yes
+    daemon_reload: yes
+  register: containerd_start
+
+# ---------- STEP 14: Wait for containerd ready ----------
+- name: "Wait for containerd to be ready"
+  wait_for:
+    timeout: 10
+  when: containerd_start.changed
+
+- name: "Sleep for containerd stabilization"
+  pause:
+    seconds: 3
+
+# ---------- STEP 15: FINAL VERIFICATION ----------
+- name: "Final verification — containerd active"
+  shell: systemctl is-active containerd
+  register: final_status
+  changed_when: false
+
+- name: "Final verification — CRI runtime ready"
+  shell: crictl info 2>/dev/null | grep -A1 '"RuntimeReady"' | grep '"status"' | grep -o 'true'
+  register: cri_ready
+  changed_when: false
+  failed_when: false
+
+- name: "Display final status"
+  debug:
+    msg:
+      - "═══════════════════════════════════════"
+      - "containerd: {{ final_status.stdout }}"
+      - "CRI RuntimeReady: {{ cri_ready.stdout | default('unknown') }}"
+      - "Config lines: {{ config_check.stdout }}"
+      - "═══════════════════════════════════════"
+
+# ---------- STEP 16: FAIL if CRI not ready ----------
+- name: "Fail if CRI is not ready"
+  fail:
+    msg: "CRI runtime is not ready. Check /etc/containerd/config.toml"
+  when: cri_ready.stdout != "true"

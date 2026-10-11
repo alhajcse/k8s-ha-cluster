@@ -1,0 +1,60 @@
+# ============================================================
+# Local Configuration — NEVER COMMIT
+# ============================================================
+
+# Environment
+.env
+.env.local
+*.env
+!.env.example
+
+# VM artifacts
+*.qcow2
+*.img
+*.iso
+*-seed.iso
+
+# Logs
+*.log
+logs/
+kubeadm-init.log
+
+# Temp
+/tmp/
+*.tmp
+*.bak
+*.swp
+*~
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# ============================================================
+# SECURITY — NEVER COMMIT!
+# ============================================================
+
+# Join commands
+cp-join.txt
+worker-join.txt
+*-join.txt
+k8s-shell/cp-join.txt
+k8s-shell/worker-join.txt
+
+# Tokens & Keys
+*.token
+*.key
+*.pem
+*.crt
+kubeconfig
+*.kubeconfig
+
+# Secrets
+secrets/
+*secret*
+*credential*

@@ -1,0 +1,71 @@
+---
+# ============================================================
+# UFW Firewall Setup
+# ============================================================
+
+# ---------- 1. UFW install ----------
+- name: "UFW install"
+  apt:
+    name: ufw
+    state: present
+
+# ---------- 2. Reset ----------
+- name: "UFW reset"
+  ufw:
+    state: reset
+
+# ---------- 3. Default policies ----------
+- name: "Default policies (deny in, allow out)"
+  ufw:
+    direction: "{{ item.direction }}"
+    policy: "{{ item.policy }}"
+  loop:
+    - { direction: incoming, policy: deny }
+    - { direction: outgoing, policy: allow }
+
+# ---------- 4. Common ports ----------
+- name: "Common ports open"
+  ufw:
+    rule: allow
+    port: "{{ item.port }}"
+    proto: "{{ item.proto }}"
+  loop:
+    - { port: '22', proto: tcp }              # SSH
+    - { port: '10250', proto: tcp }           # kubelet
+    - { port: '30000:32767', proto: tcp }     # NodePort
+    - { port: '179', proto: tcp }             # Calico BGP
+    - { port: '4789', proto: udp }            # VXLAN
+    - { port: '8472', proto: udp }            # Calico
+    - { port: '3260', proto: tcp }            # iSCSI
+    - { port: '2049', proto: tcp }            # NFS
+    - { port: '9100', proto: tcp }            # node-exporter
+
+# ---------- 5. Pod network ----------
+- name: "Pod network allow"
+  ufw:
+    rule: allow
+    from_ip: '10.244.0.0/16'
+
+# ---------- 6. Service network ----------
+- name: "Service network allow"
+  ufw:
+    rule: allow
+    from_ip: '10.96.0.0/12'
+
+# ---------- 7. Control plane ports (CP only) ----------
+- name: "CP ports open"
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  loop:
+    - '6443'          # K8s API
+    - '2379:2380'     # etcd
+    - '10257'         # controller-manager
+    - '10259'         # scheduler
+  when: inventory_hostname in groups['control_plane']
+
+# ---------- 8. Enable ----------
+- name: "UFW enable"
+  ufw:
+    state: enabled

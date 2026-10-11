@@ -1,0 +1,99 @@
+---
+# ============================================================
+# OS Preparation — সব VM-এ
+# ============================================================
+
+# ---------- 1. OS update ----------
+- name: "OS update (apt update)"
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600   # 1 ঘণ্টা cache
+
+# ---------- 2. Base packages ----------
+- name: "Base packages install"
+  apt:
+    name:
+      - curl
+      - wget
+      - git
+      - vim
+      - htop
+      - jq
+      - net-tools
+      - dnsutils
+      - ca-certificates
+      - gnupg
+      - lsb-release
+      - apt-transport-https
+      - chrony              # time sync
+      - open-iscsi          # Longhorn storage
+      - nfs-common          # NFS
+      - netcat-openbsd
+    state: present
+
+# ---------- 3. Timezone ----------
+- name: "Timezone set to Asia/Dhaka"
+  timezone:
+    name: Asia/Dhaka
+
+# ---------- 4. Chrony enable ----------
+- name: "Chrony (time sync) চালু"
+  systemd:
+    name: chrony
+    state: started
+    enabled: yes
+
+# ---------- 5. Swap off (K8s-এর জন্য জরুরি) ----------
+- name: "Swap বন্ধ (runtime)"
+  command: swapoff -a
+  changed_when: false
+
+- name: "fstab থেকে swap বাদ দাও"
+  replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s+.*)$'
+    replace: '# \1'
+
+# ---------- 6. Kernel modules ----------
+- name: "Kernel module load"
+  modprobe:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - overlay         # containerd storage
+    - br_netfilter    # iptables for bridge
+
+- name: "Kernel modules persist"
+  copy:
+    dest: /etc/modules-load.d/k8s.conf
+    content: |
+      overlay
+      br_netfilter
+
+# ---------- 7. Sysctl ----------
+- name: "Sysctl config"
+  copy:
+    dest: /etc/sysctl.d/99-k8s.conf
+    content: |
+      # K8s networking
+      net.bridge.bridge-nf-call-iptables  = 1
+      net.bridge.bridge-nf-call-ip6tables = 1
+      net.ipv4.ip_forward                 = 1
+      net.ipv4.conf.all.forwarding        = 1
+
+      # File watchers
+      fs.inotify.max_user_watches         = 524288
+      fs.inotify.max_user_instances       = 512
+
+      # Memory
+      vm.max_map_count                    = 262144
+      vm.swappiness                       = 0
+
+      # Connection tracking
+      net.netfilter.nf_conntrack_max      = 131072
+  register: sysctl_cfg
+
+- name: "Sysctl apply"
+  command: sysctl --system
+  when: sysctl_cfg.changed
+  changed_when: false
