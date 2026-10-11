@@ -1,0 +1,346 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" font-family="Arial, sans-serif">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="gradCP" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#1e40af"/>
+    </linearGradient>
+    <linearGradient id="gradWorker" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="gradVIP" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+    <linearGradient id="gradCalico" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#c2410c"/>
+    </linearGradient>
+    <linearGradient id="gradStorage" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+    <linearGradient id="gradMonitor" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+    <linearGradient id="gradClient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#64748b"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+    <linearGradient id="gradBG" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+
+    <!-- Shadows -->
+    <filter id="shadow" x="-5%" y="-5%" width="115%" height="115%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <filter id="shadowSm" x="-5%" y="-5%" width="115%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.15"/>
+    </filter>
+
+    <!-- Arrow markers -->
+    <marker id="arrGray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#64748b"/>
+    </marker>
+    <marker id="arrGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#10b981"/>
+    </marker>
+    <marker id="arrOrange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#f59e0b"/>
+    </marker>
+    <marker id="arrBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#3b82f6"/>
+    </marker>
+    <marker id="arrRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#ef4444"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1600" height="1200" fill="url(#gradBG)"/>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- TITLE -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <text x="800" y="45" text-anchor="middle" font-size="32" font-weight="bold" fill="#0f172a">
+    🏛️ K8s HA Cluster — Architecture
+  </text>
+  <text x="800" y="75" text-anchor="middle" font-size="15" fill="#64748b">
+    5 VM · 3 Control Plane + 2 Worker · Kubernetes v1.30 · Calico · Longhorn · MetalLB
+  </text>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- LAYER 1: CLIENT ACCESS -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <rect x="550" y="110" width="500" height="90" rx="12" fill="url(#gradClient)" filter="url(#shadow)"/>
+  <text x="800" y="145" text-anchor="middle" font-size="20" font-weight="bold" fill="#ffffff">
+    🖥️ CLIENT / ADMIN ACCESS
+  </text>
+  <text x="800" y="170" text-anchor="middle" font-size="14" fill="#cbd5e1">
+    kubectl · SSH · Browser UI · ArgoCD
+  </text>
+  <text x="800" y="190" text-anchor="middle" font-size="12" fill="#94a3b8">
+    https://x.x.x.237:6443
+  </text>
+
+  <!-- Arrow Client → VIP -->
+  <line x1="800" y1="200" x2="800" y2="245" stroke="#64748b" stroke-width="3" marker-end="url(#arrGray)"/>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- LAYER 2: VIP (kube-vip) -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <rect x="550" y="255" width="500" height="80" rx="12" fill="url(#gradVIP)" filter="url(#shadow)"/>
+  <text x="800" y="290" text-anchor="middle" font-size="20" font-weight="bold" fill="#ffffff">
+    ⚖️ kube-vip — Virtual IP
+  </text>
+  <text x="800" y="315" text-anchor="middle" font-size="14" fill="#e9d5ff">
+    VIP: x.x.x.237 · ARP-based leader election
+  </text>
+
+  <!-- Arrows VIP → 3 CPs -->
+  <line x1="650" y1="335" x2="250" y2="410" stroke="#3b82f6" stroke-width="3" marker-end="url(#arrBlue)"/>
+  <line x1="800" y1="335" x2="800" y2="410" stroke="#3b82f6" stroke-width="3" marker-end="url(#arrBlue)"/>
+  <line x1="950" y1="335" x2="1350" y2="410" stroke="#3b82f6" stroke-width="3" marker-end="url(#arrBlue)"/>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- LAYER 3: CONTROL PLANE NODES (3) -->
+  <!-- ═══════════════════════════════════════════════════ -->
+
+  <!-- CP-01 -->
+  <rect x="100" y="420" width="300" height="240" rx="12" fill="#ffffff" stroke="#3b82f6" stroke-width="3" filter="url(#shadow)"/>
+  <rect x="100" y="420" width="300" height="55" rx="12" fill="url(#gradCP)"/>
+  <rect x="100" y="455" width="300" height="20" fill="url(#gradCP)"/>
+  <text x="250" y="450" text-anchor="middle" font-size="18" font-weight="bold" fill="#ffffff">
+    🔵 CP-01
+  </text>
+  <text x="250" y="470" text-anchor="middle" font-size="13" fill="#dbeafe">
+    x.x.x.237
+  </text>
+
+  <text x="115" y="500" font-size="13" font-weight="bold" fill="#1e293b">Components:</text>
+  <text x="115" y="522" font-size="12" fill="#475569">• kube-apiserver :6443</text>
+  <text x="115" y="542" font-size="12" fill="#475569">• kube-scheduler</text>
+  <text x="115" y="562" font-size="12" fill="#475569">• kube-controller-manager</text>
+  <text x="115" y="582" font-size="12" fill="#475569">• etcd :2379-2380</text>
+  <text x="115" y="602" font-size="12" fill="#475569">• kubelet :10250</text>
+  <text x="115" y="622" font-size="12" fill="#475569">• kube-vip (leader)</text>
+  <text x="115" y="642" font-size="12" fill="#475569">• calico-node</text>
+
+  <!-- CP-02 -->
+  <rect x="650" y="420" width="300" height="240" rx="12" fill="#ffffff" stroke="#3b82f6" stroke-width="3" filter="url(#shadow)"/>
+  <rect x="650" y="420" width="300" height="55" rx="12" fill="url(#gradCP)"/>
+  <rect x="650" y="455" width="300" height="20" fill="url(#gradCP)"/>
+  <text x="800" y="450" text-anchor="middle" font-size="18" font-weight="bold" fill="#ffffff">
+    🔵 CP-02
+  </text>
+  <text x="800" y="470" text-anchor="middle" font-size="13" fill="#dbeafe">
+    x.x.x.238
+  </text>
+
+  <text x="665" y="500" font-size="13" font-weight="bold" fill="#1e293b">Components:</text>
+  <text x="665" y="522" font-size="12" fill="#475569">• kube-apiserver :6443</text>
+  <text x="665" y="542" font-size="12" fill="#475569">• kube-scheduler</text>
+  <text x="665" y="562" font-size="12" fill="#475569">• kube-controller-manager</text>
+  <text x="665" y="582" font-size="12" fill="#475569">• etcd :2379-2380</text>
+  <text x="665" y="602" font-size="12" fill="#475569">• kubelet :10250</text>
+  <text x="665" y="622" font-size="12" fill="#475569">• kube-vip (standby)</text>
+  <text x="665" y="642" font-size="12" fill="#475569">• calico-node</text>
+
+  <!-- CP-03 -->
+  <rect x="1200" y="420" width="300" height="240" rx="12" fill="#ffffff" stroke="#3b82f6" stroke-width="3" filter="url(#shadow)"/>
+  <rect x="1200" y="420" width="300" height="55" rx="12" fill="url(#gradCP)"/>
+  <rect x="1200" y="455" width="300" height="20" fill="url(#gradCP)"/>
+  <text x="1350" y="450" text-anchor="middle" font-size="18" font-weight="bold" fill="#ffffff">
+    🔵 CP-03
+  </text>
+  <text x="1350" y="470" text-anchor="middle" font-size="13" fill="#dbeafe">
+    x.x.x.239
+  </text>
+
+  <text x="1215" y="500" font-size="13" font-weight="bold" fill="#1e293b">Components:</text>
+  <text x="1215" y="522" font-size="12" fill="#475569">• kube-apiserver :6443</text>
+  <text x="1215" y="542" font-size="12" fill="#475569">• kube-scheduler</text>
+  <text x="1215" y="562" font-size="12" fill="#475569">• kube-controller-manager</text>
+  <text x="1215" y="582" font-size="12" fill="#475569">• etcd :2379-2380</text>
+  <text x="1215" y="602" font-size="12" fill="#475569">• kubelet :10250</text>
+  <text x="1215" y="622" font-size="12" fill="#475569">• kube-vip (standby)</text>
+  <text x="1215" y="642" font-size="12" fill="#475569">• calico-node</text>
+
+  <!-- etcd Cluster Connection (HA) -->
+  <line x1="400" y1="600" x2="650" y2="600" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="6,4"/>
+  <line x1="950" y1="600" x2="1200" y2="600" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="6,4"/>
+  <rect x="700" y="655" width="200" height="28" rx="6" fill="#f3e8ff" stroke="#8b5cf6" stroke-width="1"/>
+  <text x="800" y="674" text-anchor="middle" font-size="12" font-weight="bold" fill="#6d28d9">
+    🔄 etcd quorum (3-node)
+  </text>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- LAYER 4: WORKER NODES (2) -->
+  <!-- ═══════════════════════════════════════════════════ -->
+
+  <!-- Arrows from CPs to Workers (scheduler) -->
+  <line x1="250" y1="660" x2="400" y2="730" stroke="#fbbf24" stroke-width="3" marker-end="url(#arrOrange)"/>
+  <line x1="800" y1="660" x2="800" y2="730" stroke="#fbbf24" stroke-width="3" marker-end="url(#arrOrange)"/>
+  <line x1="1350" y1="660" x2="1200" y2="730" stroke="#fbbf24" stroke-width="3" marker-end="url(#arrOrange)"/>
+
+  <!-- Worker-01 -->
+  <rect x="300" y="740" width="400" height="220" rx="12" fill="#ffffff" stroke="#fbbf24" stroke-width="3" filter="url(#shadow)"/>
+  <rect x="300" y="740" width="400" height="55" rx="12" fill="url(#gradWorker)"/>
+  <rect x="300" y="775" width="400" height="20" fill="url(#gradWorker)"/>
+  <text x="500" y="770" text-anchor="middle" font-size="18" font-weight="bold" fill="#78350f">
+    🟡 Worker-01
+  </text>
+  <text x="500" y="790" text-anchor="middle" font-size="13" fill="#78350f">
+    x.x.x.240
+  </text>
+
+  <text x="315" y="820" font-size="13" font-weight="bold" fill="#1e293b">Components:</text>
+  <text x="315" y="842" font-size="12" fill="#475569">• kubelet :10250</text>
+  <text x="315" y="862" font-size="12" fill="#475569">• kube-proxy</text>
+  <text x="315" y="882" font-size="12" fill="#475569">• containerd :runtime</text>
+  <text x="315" y="902" font-size="12" fill="#475569">• calico-node</text>
+  <text x="315" y="922" font-size="12" fill="#475569">• longhorn-manager</text>
+  <text x="315" y="942" font-size="12" fill="#475569">• longhorn-instance-manager</text>
+
+  <!-- Worker-02 -->
+  <rect x="900" y="740" width="400" height="220" rx="12" fill="#ffffff" stroke="#fbbf24" stroke-width="3" filter="url(#shadow)"/>
+  <rect x="900" y="740" width="400" height="55" rx="12" fill="url(#gradWorker)"/>
+  <rect x="900" y="775" width="400" height="20" fill="url(#gradWorker)"/>
+  <text x="1100" y="770" text-anchor="middle" font-size="18" font-weight="bold" fill="#78350f">
+    🟡 Worker-02
+  </text>
+  <text x="1100" y="790" text-anchor="middle" font-size="13" fill="#78350f">
+    x.x.x.241
+  </text>
+
+  <text x="915" y="820" font-size="13" font-weight="bold" fill="#1e293b">Components:</text>
+  <text x="915" y="842" font-size="12" fill="#475569">• kubelet :10250</text>
+  <text x="915" y="862" font-size="12" fill="#475569">• kube-proxy</text>
+  <text x="915" y="882" font-size="12" fill="#475569">• containerd :runtime</text>
+  <text x="915" y="902" font-size="12" fill="#475569">• calico-node</text>
+  <text x="915" y="922" font-size="12" fill="#475569">• longhorn-manager</text>
+  <text x="915" y="942" font-size="12" fill="#475569">• longhorn-instance-manager</text>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- LAYER 5: STORAGE (Longhorn) -->
+  <!-- ═══════════════════════════════════════════════════ -->
+
+  <!-- Worker → Longhorn -->
+  <line x1="500" y1="960" x2="500" y2="1000" stroke="#10b981" stroke-width="3" marker-end="url(#arrGreen)"/>
+  <line x1="1100" y1="960" x2="1100" y2="1000" stroke="#10b981" stroke-width="3" marker-end="url(#arrGreen)"/>
+
+  <!-- Longhorn Storage Layer -->
+  <rect x="200" y="1010" width="1200" height="80" rx="12" fill="url(#gradStorage)" filter="url(#shadow)"/>
+  <text x="800" y="1045" text-anchor="middle" font-size="20" font-weight="bold" fill="#ffffff">
+    💾 Longhorn Storage (v1.7.3)
+  </text>
+  <text x="800" y="1070" text-anchor="middle" font-size="14" fill="#d1fae5">
+    2 Replicas · iSCSI :9501-9504 · Manager 5/5 · StorageClass: longhorn (default)
+  </text>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- LAYER 6: LOAD BALANCER (MetalLB) + Monitoring -->
+  <!-- ═══════════════════════════════════════════════════ -->
+
+  <!-- Left Side: MetalLB -->
+  <rect x="100" y="1105" width="650" height="70" rx="10" fill="url(#gradCalico)" filter="url(#shadowSm)"/>
+  <text x="425" y="1135" text-anchor="middle" font-size="16" font-weight="bold" fill="#ffffff">
+    🌐 MetalLB — LoadBalancer
+  </text>
+  <text x="425" y="1158" text-anchor="middle" font-size="12" fill="#fed7aa">
+    IP Pool: x.x.x.250-x.x.x.254 · L2 Mode · Speaker 5/5
+  </text>
+
+  <!-- Right Side: Monitoring -->
+  <rect x="850" y="1105" width="650" height="70" rx="10" fill="url(#gradMonitor)" filter="url(#shadowSm)"/>
+  <text x="1175" y="1135" text-anchor="middle" font-size="16" font-weight="bold" fill="#ffffff">
+    📊 Monitoring Stack (Phase 7+)
+  </text>
+  <text x="1175" y="1158" text-anchor="middle" font-size="12" fill="#fecaca">
+    Prometheus · Grafana · Loki · Alertmanager · Dashboard
+  </text>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- LEGEND -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <rect x="1250" y="110" width="330" height="280" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" filter="url(#shadowSm)"/>
+  <text x="1415" y="140" text-anchor="middle" font-size="16" font-weight="bold" fill="#0f172a">
+    📖 Legend
+  </text>
+
+  <!-- CP -->
+  <rect x="1270" y="160" width="20" height="20" rx="4" fill="url(#gradCP)"/>
+  <text x="1305" y="176" font-size="13" fill="#1e293b">Control Plane Node</text>
+
+  <!-- Worker -->
+  <rect x="1270" y="195" width="20" height="20" rx="4" fill="url(#gradWorker)"/>
+  <text x="1305" y="211" font-size="13" fill="#1e293b">Worker Node</text>
+
+  <!-- VIP -->
+  <rect x="1270" y="230" width="20" height="20" rx="4" fill="url(#gradVIP)"/>
+  <text x="1305" y="246" font-size="13" fill="#1e293b">kube-vip / VIP</text>
+
+  <!-- Storage -->
+  <rect x="1270" y="265" width="20" height="20" rx="4" fill="url(#gradStorage)"/>
+  <text x="1305" y="281" font-size="13" fill="#1e293b">Longhorn Storage</text>
+
+  <!-- MetalLB -->
+  <rect x="1270" y="300" width="20" height="20" rx="4" fill="url(#gradCalico)"/>
+  <text x="1305" y="316" font-size="13" fill="#1e293b">MetalLB / CNI</text>
+
+  <!-- Monitoring -->
+  <rect x="1270" y="335" width="20" height="20" rx="4" fill="url(#gradMonitor)"/>
+  <text x="1305" y="351" font-size="13" fill="#1e293b">Monitoring (coming)</text>
+
+  <!-- Arrow types -->
+  <text x="1270" y="380" font-size="12" font-weight="bold" fill="#64748b">Arrows:</text>
+
+  <line x1="1270" y1="395" x2="1330" y2="395" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrBlue)"/>
+  <text x="1340" y="399" font-size="11" fill="#64748b">API</text>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- INFO BOX — Network Details -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <rect x="30" y="110" width="490" height="280" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" filter="url(#shadowSm)"/>
+  <text x="275" y="140" text-anchor="middle" font-size="16" font-weight="bold" fill="#0f172a">
+    🔧 Network Details
+  </text>
+
+  <text x="55" y="170" font-size="13" font-weight="bold" fill="#1e293b">Pod CIDR:</text>
+  <text x="175" y="170" font-size="13" fill="#475569">10.244.0.0/16</text>
+
+  <text x="55" y="195" font-size="13" font-weight="bold" fill="#1e293b">Service CIDR:</text>
+  <text x="175" y="195" font-size="13" fill="#475569">10.96.0.0/12</text>
+
+  <text x="55" y="220" font-size="13" font-weight="bold" fill="#1e293b">CNI:</text>
+  <text x="175" y="220" font-size="13" fill="#475569">Calico v3.28 (IPIP)</text>
+
+  <text x="55" y="245" font-size="13" font-weight="bold" fill="#1e293b">Runtime:</text>
+  <text x="175" y="245" font-size="13" fill="#475569">containerd 2.x</text>
+
+  <text x="55" y="270" font-size="13" font-weight="bold" fill="#1e293b">OS:</text>
+  <text x="175" y="270" font-size="13" fill="#475569">Ubuntu 24.04 LTS</text>
+
+  <text x="55" y="295" font-size="13" font-weight="bold" fill="#1e293b">K8s Version:</text>
+  <text x="175" y="295" font-size="13" fill="#475569">v1.30.0</text>
+
+  <text x="55" y="320" font-size="13" font-weight="bold" fill="#1e293b">Storage:</text>
+  <text x="175" y="320" font-size="13" fill="#475569">Longhorn v1.7.3</text>
+
+  <text x="55" y="345" font-size="13" font-weight="bold" fill="#1e293b">Ingress:</text>
+  <text x="175" y="345" font-size="13" fill="#475569">MetalLB (L2)</text>
+
+  <text x="55" y="370" font-size="13" font-weight="bold" fill="#1e293b">NodePort:</text>
+  <text x="175" y="370" font-size="13" fill="#475569">30000-32767</text>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- FOOTER -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <text x="800" y="1195" text-anchor="middle" font-size="11" fill="#94a3b8">
+    Last Updated: 2026 · Production-Ready HA Cluster · Phase 6 Complete (Longhorn Working)
+  </text>
+</svg>
