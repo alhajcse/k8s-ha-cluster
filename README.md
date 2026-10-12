@@ -312,7 +312,7 @@ ssh vm@x.x.x.241 "sudo $(cat /tmp/worker-join.txt)"
 ssh vm@x.x.x.237 "kubectl get nodes"
 ```
 
-**Expected (৫টি NotReady):**
+**Expected (5 NotReady):**
 
 ```
 NAME            STATUS     ROLES           AGE   VERSION
@@ -376,7 +376,7 @@ calico-node-fsphh   0/1   Running   no
 calico-node-sqwhk   0/1   Running   no
 ```
 
-**Log দেখলে:**
+**Log :**
 
 ```bash
 kubectl logs -n calico-system calico-node-fsphh --tail=30
@@ -392,7 +392,7 @@ error=dial tcp x.x.x.241:5473: i/o timeout
 ** Solution:**
 
 ```bash
-# সব VM-এ 5473 allow
+# All VM- 5473 allow
 for ip in 237 238 239 240 241; do
     ssh vm@x.x.x.$ip "sudo ufw allow 5473/tcp comment 'Calico Typha'"
     ssh vm@x.x.x.$ip "sudo ufw allow proto 4 from x.x.x.0/24"
@@ -408,7 +408,7 @@ sleep 90
 ssh vm@x.x.x.237 "kubectl get pods -n calico-system -l k8s-app=calico-node"
 ```
 
-** Result:** সব `1/1 Running`
+** Result:** All `1/1 Running`
 
 ```bash
 # Verify connectivity
@@ -470,13 +470,13 @@ done
 
 ### 5.2 CP Node Tolerations (CRITICAL!)
 
->  **CP nodes-এ taint থাকে, তাই Longhorn DaemonSet-কে tolerate করতে বলতে হবে**
+>  **CP nodes are tainted, so the Longhorn DaemonSet must be configured to tolerate them.**
 
 **Problem:**
 
 ```bash
 kubectl get pods -n longhorn-system -l app=longhorn-manager -o wide
-# শুধু Worker node-এ pod, CP-এ নেই
+# The pod runs only on a worker node, not on the control plane.
 ```
 
 **Solution — Values File:**
@@ -794,13 +794,13 @@ ssh vm@x.x.x.237 "kubectl get pods -n longhorn-system | grep -v Running"
 
 ### Golden Rules
 
-**১. Firewall First, Then install**
+**1. Firewall First, Then install**
 ```
 All port allow then install
 otherwise cluster stay half-done 
 ```
 
-**২. containerd config verify**
+**2. containerd config verify**
 ```
 CRI enabled check
 SystemdCgroup = true
@@ -808,19 +808,19 @@ sandbox_image set
 Config lines > 200
 ```
 
-**৩. CP taints tolerate**
+**3. CP taints tolerate**
 ```
 Storage DaemonSet-এ tolerations
 Longhorn, Monitoring etc.
 ```
 
-**৪. Idempotent scripts**
+**4. Idempotent scripts**
 ```
 more time run, same result
 Reset + clean install
 ```
 
-**৫. Verify after each step**
+**5. Verify after each step**
 ```
 for next step- check 1st
 kubectl get nodes, kubectl top nodes
