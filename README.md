@@ -56,7 +56,7 @@
 
 ## Phase 1: VM Preparation
 
-### 1.1 Ansible + Terraform Install (ল্যাপটপে)
+### 1.1 Ansible + Terraform Install
 
 ```bash
 # ------------------------------------------------------------
@@ -98,10 +98,10 @@ terraform --version
 ### 1.2 SSH Key Setup
 
 ```bash
-# Key তৈরি
+# Key Create
 ls ~/.ssh/id_ed25519 || ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519
 
-# সব VM-এ copy
+# Copy ALL VM
 for ip in 237 238 239 240 241; do
     echo "→ x.x.x.$ip"
     ssh-copy-id vm@x.x.x.$ip
@@ -116,9 +116,11 @@ done
 
 ### 1.3 Firewall Configuration (CRITICAL!)
 
-> **সবচেয়ে গুরুত্বপূর্ণ step — এই port গুলো miss করলে পুরো cluster ভেঙে যাবে**
+> **Most important step — if you miss this port, the entire cluster will break.**
 
 ```bash
+
+# UFW rules configuration all VM (5 Kubernetes machine)
 for ip in 237 238 239 240 241; do
     echo "════════ x.x.x.$ip ════════"
     
@@ -128,14 +130,16 @@ for ip in 237 238 239 240 241; do
 # ─────────────────────────────────────
 sudo ufw allow 22/tcp comment 'SSH'
 sudo ufw allow 6443/tcp comment 'K8s API'
+# Client → etcd port 2379 and etcd member-to-member communication port 2330
 sudo ufw allow 2379:2380/tcp comment 'etcd'
+# Control Plane communicate with Kubelet ->Containers/Pods
 sudo ufw allow 10250/tcp comment 'kubelet'
 sudo ufw allow 10257/tcp comment 'controller-mgr'
 sudo ufw allow 10259/tcp comment 'scheduler'
 sudo ufw allow 30000:32767/tcp comment 'NodePort'
 
 # ─────────────────────────────────────
-# Calico (CRITICAL!)
+# Calico (CRITICAL!).BGP VXLAN IPIP not all for production
 # ─────────────────────────────────────
 sudo ufw allow 5473/tcp comment 'Calico Typha'      # ← MUST!
 sudo ufw allow 179/tcp comment 'Calico BGP'
@@ -165,11 +169,11 @@ done
 ```bash
 cd ~/k8s-project/ansible
 
-# সব role চালাও (OS prep, containerd, k8s-tools, firewall)
+# All role run (OS prep, containerd, k8s-tools, firewall)
 ansible-playbook playbooks/site.yml
 
-# Time: ১০-১৫ mitutes
-# Success হলে:
+# Time: 10-15 mitutes
+# If Success:
 # PLAY RECAP
 # k8s-cp-01   : ok=15 changed=8 unreachable=0 failed=0
 ```
