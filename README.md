@@ -211,6 +211,21 @@ done
 
 ### 1.4 Ansible Playbook Run
 
+Instead of manually SSH-ing into each of the 5 VMs to install packages, configure services, and set firewall rules, this single command applies the same configuration to all of them simultaneously.
+
+This ensures your cluster is built on a **consistent baseline**, which is critical for stability and troubleshooting later.
+
+### Roles Applied by `site.yml`
+
+| Role | Purpose |
+|------|---------|
+| **OS Preparation** | Sets hostnames, updates packages, disables swap, loads kernel modules, applies sysctl settings required by Kubernetes. |
+| **containerd** | Installs and configures the container runtime (containerd 2.x) that Kubernetes uses to run containers. |
+| **k8s-tools** | Installs `kubeadm`, `kubelet`, and `kubectl`, pinned to version **v1.30.0**. |
+| **Firewall** | Applies all UFW rules (API server, etcd, Calico, Longhorn, etc.) so cluster components can communicate. |
+
+---
+
 ```bash
 cd ~/k8s-project/ansible
 
