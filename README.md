@@ -541,6 +541,8 @@ k8s-worker-02   NotReady   <none>          30s   v1.30.0
 
 ## Phase 3: Calico CNI + Network Fixes
 
+Kubernetes cluster already initialized (Phase 1–2). This phase installs Calico as the CNI, fixes the Typha port 5473 firewall block
+
 ### 3.1 Calico Install (CP-01)
 
 ```bash
@@ -575,6 +577,7 @@ echo " Calico installed"
 kubectl get nodes
 CALICO
 ```
+Commands are run from an admin workstation that SSHes into x.x.x.237 (the bootstrap CP node). All kubectl calls target the cluster via that node's kubeconfig. Tigera Operator automatically create a `calico-node` Pod each Node.
 
 ### 3.2 Problem: calico-node pods 0/1 Stuck
 
@@ -827,75 +830,7 @@ http://x.x.x.237:30400
 
 ---
 
-##  Phase 6: MetalLB + Ingress
 
-### 6.1 MetalLB Install
-
-```bash
-# Repo
-ssh vm@x.x.x.237 "helm repo add metallb https://metallb.github.io/metallb"
-ssh vm@x.x.x.237 "helm repo update"
-
-# Install
-ssh vm@x.x.x.237 "kubectl create namespace metallb-system --dry-run=client -o yaml | kubectl apply -f -"
-ssh vm@x.x.x.237 "helm install metallb metallb/metallb -n metallb-system"
-
-sleep 60
-
-# Verify
-ssh vm@x.x.x.237 "kubectl get pods -n metallb-system"
-# Expected:
-# metallb-controller-xxx   1/1  Running
-# metallb-speaker-xxx (×5) 1/1  Running
-```
-
-### 6.2 IP Pool Config
-
-```bash
-cat <<'EOF' | ssh vm@x.x.x.237 "kubectl apply -f -"
-apiVersion: metallb.io/v1beta1
-kind: IPAddressPool
-metadata:
-  name: default-pool
-  namespace: metallb-system
-spec:
-  addresses:
-    - x.x.x.250-x.x.x.254
----
-apiVersion: metallb.io/v1beta1
-kind: L2Advertisement
-metadata:
-  name: default
-  namespace: metallb-system
-spec:
-  ipAddressPools:
-    - default-pool
-EOF
-
-# Verify
-ssh vm@x.x.x.237 "kubectl get ipaddresspool,l2advertisement -n metallb-system"
-```
-
-### 6.3 Test LoadBalancer
-
-```bash
-# Test service
-ssh vm@x.x.x.237 "kubectl create deployment test-lb --image=nginx --replicas=2"
-sleep 10
-ssh vm@x.x.x.237 "kubectl expose deployment test-lb --port=80 --type=LoadBalancer"
-
-sleep 30
-
-# External IP assigned?
-ssh vm@x.x.x.237 "kubectl get svc test-lb"
-# Expected: EXTERNAL-IP = x.x.x.250
-
-# Cleanup
-ssh vm@x.x.x.237 "kubectl delete svc test-lb"
-ssh vm@x.x.x.237 "kubectl delete deployment test-lb"
-```
-
----
 
 ## Problem-Solution Matrix
 
