@@ -70,6 +70,9 @@ This guide covers:
 
 ## Phase 1: VM Preparation
 
+Based on the 🔗 **[kvm-ha-cluste](https://github.com/alhajcse/kvm-ha-cluster)**
+ repository — assuming VMs are already provisioned. This guide covers configuring those VMs for a Kubernetes cluster.
+
 ### 1.1 Ansible + Terraform Install
 
 ```bash
