@@ -9,6 +9,20 @@
 
 ---
 
+## **Important:** Before you install Kubernetes, you **must** learn the basic components.  
+> Attempting to install without understanding the architecture leads to misdiagnosing networking problems as Kubernetes problems.
+
+🔗 **[Kubernetes Zero to Advanced — Complete Component Guide](https://github.com/alhajcse/k8s-ha-cluster/blob/master/kubernetes_zero_to_advanced_complete_component_guide.md)**
+
+This guide covers:
+
+- Architecture, Components, Networking, Storage, Security, HA, Observability & Troubleshooting
+- **Level:** Beginner to Advanced
+- **Purpose:** Understand what each important Kubernetes component is, why it is needed, how components interact, what happens when a component fails, and how to troubleshoot step by step.
+
+---
+
+
 ## Table of Contents
 
 - [Architecture Overview](#-architecture-overview)
