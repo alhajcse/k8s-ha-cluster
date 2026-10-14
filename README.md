@@ -108,6 +108,12 @@ sudo apt install -y terraform
 
 terraform --version
 ```
+Ansible will be installed from the official PPA (ppa:ansible/ansible).
+Terraform will be installed from the HashiCorp APT repository.
+Additional CLI tools (`sshpass`, `netcat-openbsd`, `jq`, `tree`, `htop`, `git`, `curl`, `wget`, `vim`) will be installed.
+Required Ansible collections (community.general, ansible.posix, kubernetes.core) will be installed.
+Result: Your machine becomes an Ansible control node and has Terraform ready for infrastructure provisioning.
+
 
 ### 1.2 SSH Key Setup
 
@@ -127,8 +133,33 @@ for ip in 237 238 239 240 241; do
     ssh -o ConnectTimeout=3 -o BatchMode=yes vm@x.x.x.$ip "hostname"
 done
 ```
+## Key generation
+- If ~/.ssh/id_ed25519 does not exist, a new ED25519 key pair is generated without a passphrase (-N "").
+- If the key already exists, it is not overwritten (ls ... || ssh-keygen ...).
+
+## Copy public key to VMs
+For each IP in the list 237 238 239 240 241:
+- `ssh-copy-id vm@x.x.x.$ip` is executed.
+- You will be prompted for the password of user vm on each VM (unless passwordless SSH is already set up).
+- The public key is appended to ~vm/.ssh/authorized_keys on each VM.
+- The SSH host key of each VM is added to ~/.ssh/known_hosts (if not already present).
+
+## Verification
+For each IP:
+- An SSH connection is attempted with BatchMode=yes (no password prompt).
+- The command hostname is run on the remote VM.
+- If successful, the output is: x.x.x.237 → <hostname>.
+- If it fails, you will see an error like Permission denied or Connection timed out.
+  
+Result: You now have passwordless SSH access from the control node to all five VMs (assuming the passwords were entered correctly and the network is reachable).
+
+
+
 
 ### 1.3 Firewall Configuration (CRITICAL!)
+
+This script configures UFW (Uncomplicated Firewall) rules on all 5 Kubernetes VMs so that Kubernetes components, Calico CNI, and Longhorn storage can communicate with each other.
+If any required port is blocked, the cluster will break — nodes will show NotReady, Pods will stay Pending, or networking/storage will fail silently.
 
 > **Most important step — if you miss this port, the entire cluster will break.**
 
