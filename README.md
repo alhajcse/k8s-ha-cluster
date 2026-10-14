@@ -248,42 +248,63 @@ ansible k8s_cluster -m shell -a "systemctl is-active containerd kubelet"
 
 ## Phase 2: K8s Cluster Bootstrap
 
-### 2.1 kube-vip Setup (CP nodes)
+## 2.1 HA Cluster – HAProxy Setup (Alternative kube-vip)
+
+> It uses **HAProxy** (and optionally **Keepalived**) to provide a highly available API server endpoint on port `6443`.
+
+- **HAProxy** listens on `*:6443` and forwards traffic to the control plane nodes.
+- **Keepalived** (optional) manages a VIP that floats between HAProxy nodes.
+- The `controlPlaneEndpoint` in the `kubeadm` configuration points to the HAProxy address or VIP.
+
+---
+
+## Prerequisites
+
+- All control plane nodes have `kubeadm`, `kubelet`, `kubectl`, and a container runtime (e.g., `containerd`) installed.
+- The load balancer node(s) have network access to all control plane nodes on port `6443`.
+- If using Keepalived, ensure the load balancer nodes can use VRRP (protocol 112) and share a common network interface.
+
+---
+
+### 2.1.2 Configure HAProxy
+
+Edit `/etc/haproxy/haproxy.cfg`:
+
+```haproxy
+
+frontend kubernetes-frontend
+    bind *:6443
+    mode tcp
+    option tcplog
+    default_backend kubernetes-backend
+
+backend kubernetes-backend
+    mode tcp
+    balance roundrobin
+    option tcp-check
+    server cp-01 x.x.x.237:6443 check
+    server cp-02 x.x.x.238:6443 check
+    server cp-03 x.x.x.239:6443 check
+```
+
+> Replace `x.x.x.237`, `x.x.x.238`, `x.x.x.239` with the actual IP addresses of your control plane nodes.
+
+Restart and enable HAProxy:
 
 ```bash
-for ip in 237 238 239; do
-    echo "════════ kube-vip on x.x.x.$ip ════════"
-    
-    ssh vm@x.x.x.$ip "sudo bash -s $ip" <<'KUBE_VIP'
-VIP="$1"
-INTERFACE=$(ip -o -4 route show to default | awk '{print $5}' | head -1)
-
-sudo mkdir -p /etc/kubernetes/manifests
-sudo ctr -n k8s.io image pull ghcr.io/kube-vip/kube-vip:v0.8.0
-
-sudo ctr -n k8s.io run --rm --net-host \
-    ghcr.io/kube-vip/kube-vip:v0.8.0 vip \
-    /kube-vip manifest pod \
-    --interface "$INTERFACE" \
-    --address "$VIP" \
-    --controlplane \
-    --services \
-    --arp \
-    --leaderElection \
-    > /etc/kubernetes/manifests/kube-vip.yaml
-KUBE_VIP
-done
-
-# Verify
-for ip in 237 238 239; do
-    echo -n "$ip → "
-    ssh vm@x.x.x.$ip "ls /etc/kubernetes/manifests/kube-vip.yaml 2>/dev/null && echo OK"
-done
+sudo systemctl restart haproxy
+sudo systemctl enable haproxy
 ```
+
+
 
 ### 2.2 Cluster Init (CP-01)
 
 >  **For K8s v1.30 we have to used `v1beta3` API not — `v1beta4`**
+> Run the following command on the first control plane node.  
+**Important:** If HAProxy runs on a separate node/VIP, change `controlPlaneEndpoint` to the HAProxy address or VIP.  
+The `advertiseAddress` should remain the IP of the control plane node itself.
+
 
 ```bash
 ssh vm@x.x.x.237 'sudo bash -s' <<'INIT'
@@ -307,6 +328,8 @@ apiServer:
     - "x.x.x.239"
     - "x.x.x.240"
     - "x.x.x.241"
+    - "x.x.x.234"
+    - "k8s-api.local"
 etcd:
   local:
     dataDir: /var/lib/etcd
@@ -333,6 +356,134 @@ chown -R vm:vm /home/vm/.kube
 echo " CP-01 initialized"
 INIT
 ```
+
+### 2.1.5 Verify
+
+On the first control plane node:
+
+```bash
+kubectl get nodes
+kubectl get pods -n kube-system
+```
+
+Check HAProxy statistics (if enabled):
+
+```bash
+echo "show stat" | sudo socat stdio /run/haproxy/admin.sock
+```
+
+---
+
+
+## Components and Resources Installed by the Command
+
+The command above performs two main tasks:
+1. Writes a `kubeadm` configuration file to `/root/kubeadm-config.yaml`.
+2. Runs `kubeadm init` to bootstrap the first control plane node.
+
+### kubeadm Configuration File
+
+| Field | Value | Purpose |
+|-------|-------|---------|
+| `kubernetesVersion` | `v1.30.0` | Pins the control plane to Kubernetes 1.30.0. |
+| `controlPlaneEndpoint` | `"x.x.x.237:6443"` | API server endpoint used by all components. |
+| `networking.podSubnet` | `"10.244.0.0/16"` | CIDR for Pod IPs. |
+| `networking.serviceSubnet` | `"10.96.0.0/12"` | CIDR for Service IPs. |
+| `apiServer.certSANs` | `x.x.x.237` … `x.x.x.241` | SANs added to the API server certificate. |
+| `etcd.local.dataDir` | `/var/lib/etcd` | Data directory for the stacked etcd member. |
+| `KubeletConfiguration.cgroupDriver` | `systemd` | Cgroup driver for the kubelet. |
+| `InitConfiguration.localAPIEndpoint.advertiseAddress` | `x.x.x.237` | IP advertised by the API server. |
+| `InitConfiguration.localAPIEndpoint.bindPort` | `6443` | API server listening port. |
+| `nodeRegistration.criSocket` | `unix:///var/run/containerd/containerd.sock` | Container runtime socket. |
+
+### Static Pods (in `/etc/kubernetes/manifests/`)
+
+| Manifest | Component |
+|----------|-----------|
+| `kube-apiserver.yaml` | `kube-apiserver` |
+| `kube-controller-manager.yaml` | `kube-controller-manager` |
+| `kube-scheduler.yaml` | `kube-scheduler` |
+| `etcd.yaml` | `etcd` (stacked) |
+
+### Certificates and Keys (in `/etc/kubernetes/pki/`)
+
+| Path | Description |
+|------|-------------|
+| `ca.crt` / `ca.key` | Cluster root CA |
+| `apiserver.crt` / `apiserver.key` | API server serving certificate |
+| `apiserver-kubelet-client.crt` / `.key` | API server → kubelet client |
+| `front-proxy-ca.crt` / `.key` | Front-proxy CA |
+| `front-proxy-client.crt` / `.key` | Front-proxy client |
+| `etcd/ca.crt` / `ca.key` | etcd CA |
+| `etcd/server.crt` / `.key` | etcd server certificate |
+| `etcd/peer.crt` / `.key` | etcd peer certificate |
+| `etcd/healthcheck-client.crt` / `.key` | etcd health-check client |
+| `apiserver-etcd-client.crt` / `.key` | API server → etcd client |
+| `sa.key` / `sa.pub` | Service Account key pair |
+
+### kubeconfig Files (in `/etc/kubernetes/`)
+
+| File | Purpose |
+|------|---------|
+| `admin.conf` | Cluster administrator kubeconfig |
+| `kubelet.conf` | kubelet kubeconfig |
+| `controller-manager.conf` | controller-manager kubeconfig |
+| `scheduler.conf` | scheduler kubeconfig |
+
+### Bootstrap Tokens and ConfigMaps
+
+| Resource | Location |
+|----------|----------|
+| Bootstrap token | Secret in `kube-system` (`bootstrap-token-xxxxxx`) |
+| `kubeadm-config` | ConfigMap in `kube-system` |
+| `kubelet-config` | ConfigMap in `kube-system` |
+| `kubeadm-certs` | Secret in `kube-system` (due to `--upload-certs`) |
+
+### etcd Data
+
+- `/var/lib/etcd` – populated with etcd data files.
+
+### Container Images Pulled
+
+- `registry.k8s.io/kube-apiserver:v1.30.0`
+- `registry.k8s.io/kube-controller-manager:v1.30.0`
+- `registry.k8s.io/kube-scheduler:v1.30.0`
+- `registry.k8s.io/etcd:3.5.x-0`
+- `registry.k8s.io/pause:3.9`
+- `registry.k8s.io/coredns/coredns:v1.11.x`
+- `registry.k8s.io/kube-proxy:v1.30.0`
+
+### CoreDNS and kube-proxy
+
+- **CoreDNS**: Deployment in `kube-system` (2 replicas by default).
+- **kube-proxy**: DaemonSet in `kube-system`.
+
+### Post-init Actions
+
+| Action | Details |
+|--------|---------|
+| Creates `/home/vm/.kube` | Directory for the `vm` user's kubeconfig. |
+| Copies `admin.conf` → `/home/vm/.kube/config` | Grants `vm` cluster-admin access. |
+| Sets ownership to `vm:vm` | Ensures the `vm` user can read the kubeconfig. |
+| Prints "CP-01 initialized" | Indicates success. |
+
+---
+
+## Summary of Installed Resources
+
+| Category | Resources |
+|----------|-----------|
+| **Static Pods** | `kube-apiserver`, `kube-controller-manager`, `kube-scheduler`, `etcd` |
+| **Certificates / Keys** | CA, API server, etcd, front-proxy, service account, etc. |
+| **kubeconfigs** | `admin.conf`, `kubelet.conf`, `controller-manager.conf`, `scheduler.conf` |
+| **ConfigMaps / Secrets** | `kubeadm-config`, `kubelet-config`, bootstrap token, `kubeadm-certs` |
+| **Add-ons** | CoreDNS (Deployment), kube-proxy (DaemonSet) |
+| **Data Directory** | `/var/lib/etcd` |
+| **Container Images** | kube-apiserver, kube-controller-manager, kube-scheduler, etcd, pause, CoreDNS, kube-proxy |
+| **Networking** | Pod subnet (`10.244.0.0/16`), Service subnet (`10.96.0.0/12`) — no CNI plugin installed by this command alone. |
+
+---
+
 
 ### 2.3 Join Commands Save
 
