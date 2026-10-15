@@ -11,7 +11,7 @@ Recheck NodePort allocation immediately before installation. Do not assume `3008
 
 ---
 
-## 7. Pre-Install Checks
+## Pre-Install Checks
 
 Run on `node3-vm-01` just before installation:
 
@@ -73,7 +73,7 @@ supported Kubernetes versions and plan an upgrade to a currently supported Kuber
 
 ---
 
-## 8. traefik/values.yaml
+## Create traefik/values.yaml
 
 The following is a **draft**, not a confirmed working configuration. Confirm the exact 
 NodePort field names and nesting in the full values for chart version `39.0.9` before using it.
@@ -121,12 +121,12 @@ YAML
 
 Do not treat this draft as a validated configuration. Inspect the full chart values and rendered Service manifest first.
 
-2. Configuration server copy if needed
+Configuration server copy if needed
 ```
 scp traefik/values.yaml vm@10.70.16.237:/tmp/traefik-values.yaml
 ```
 
-### 8.1 Render chart manifests locally (no installation)
+### Render chart manifests locally (no installation)
 
 After correcting the values file to match the chart schema:
 
@@ -151,7 +151,7 @@ grep -n -E 'kind: (Deployment|Service|IngressClass)|nodePort:|replicas:|type: No
 
 Confirm that the rendered Service has type `NodePort` and the intended HTTP/HTTPS NodePorts before continuing.
 
-### 8.2 Namespace create and Server-side dry run (does not persist resources)
+### Namespace create and Server-side dry run (does not persist resources)
 
 ```bash
 kubectl create namespace traefik \
@@ -165,7 +165,7 @@ does not guarantee that Pods will schedule, images will pull, or network traffic
 
 If this reports errors, stop and resolve them before installation.
 
-### 8.3 Install only after compatibility and validation checks pass
+### Install only after compatibility and validation checks pass
 
 **Cluster-changing command — do not run until all checks above pass:**
 
@@ -178,13 +178,153 @@ helm upgrade --install traefik traefik/traefik \
   --timeout 5m
 ```
 
-### 8.4 Verify after installation
+### Verify after installation
 
 ```bash
 kubectl get pods,svc -n traefik -o wide
 kubectl get ingressclass
 ```
 
+
+
 **Why:** Checks Pod placement/readiness, Service type and ports, and whether the Deployment rollout completed.
 
 Expected only after a successful installation: two ready Traefik replicas and a NodePort Service exposing the verified ports. If the chart creates a differently named Deployment, use `kubectl get deploy -n traefik` to find its actual name.
+
+
+## Traefik-Details status Verify
+Command run from node3-vm-01 :
+kubectl get deployment -n traefik
+kubectl get endpoints traefik -n traefik
+kubectl get nodes -o wide
+kubectl get ingress -A
+
+
+Verify:
+- deployment/traefik 2/2 Ready 
+- endpoints Traefik- backend Pod IP and HTTP/HTTPS port
+
+## Step 2 — Crfeate one test application 
+```
+cat > /tmp/traefik-whoami.yaml <<'YAML'
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: demo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: whoami
+  namespace: demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: whoami
+  template:
+    metadata:
+      labels:
+        app: whoami
+    spec:
+      containers:
+        - name: whoami
+          image: traefik/whoami:v1.11.0
+          ports:
+            - name: http
+              containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: whoami
+  namespace: demo
+spec:
+  type: ClusterIP
+  selector:
+    app: whoami
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: whoami
+  namespace: demo
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: whoami.lab.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: whoami
+                port:
+                  number: 80
+YAML
+```
+
+Deploy
+```
+kubectl apply -f /tmp/traefik-whoami.yaml
+kubectl rollout status deployment/whoami -n demo --timeout=120s
+kubectl get pods,svc,ingress -n demo -o wide
+```
+
+## Step 3 — Traefik routing verify
+```curl -i \
+  -H 'Host: whoami.lab.local' \
+  http://10.70.16.240:30080/
+```
+and
+```
+curl -i \
+  -H 'Host: whoami.lab.local' \
+  http://10.70.16.241:30080/
+```
+
+## Access from laptop
+```sudo nano /etc/hosts```
+
+
+append add:
+```10.70.16.240 whoami.lab.local```
+
+
+Run laptop terminal:
+```curl -i http://whoami.lab.local:30080/```
+
+
+Open browser:
+```http://whoami.lab.local:30080/```
+
+```
+/Documents/k8s-ha-cluster$ curl -i http://whoami.lab.local:30080/
+HTTP/1.1 200 OK
+Content-Length: 436
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 15 Oct 2026 07:29:22 GMT
+
+Hostname: whoami-f98576c84-bfjr2
+IP: 127.0.0.1
+IP: ::1
+IP: 10.244.59.232
+IP: fe80::7c68:8ff:febe:e03e
+RemoteAddr: 10.244.59.231:33942
+GET / HTTP/1.1
+Host: whoami.lab.local:30080
+User-Agent: curl/8.5.0
+Accept: */*
+Accept-Encoding: gzip
+X-Forwarded-For: 10.70.16.240
+X-Forwarded-Host: whoami.lab.local:30080
+X-Forwarded-Port: 30080
+X-Forwarded-Proto: http
+X-Forwarded-Server: traefik-6bd4944bc9-tflpc
+X-Real-Ip: 10.70.16.240
+```
