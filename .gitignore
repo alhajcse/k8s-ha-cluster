@@ -58,3 +58,5 @@ kubeconfig
 secrets/
 *secret*
 *credential*
+
+tls/
