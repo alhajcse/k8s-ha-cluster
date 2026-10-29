@@ -31,6 +31,7 @@ locals {
   worker_nodes = [
     { name = "k8s-worker-01", ip = var.worker1_ip },
     { name = "k8s-worker-02", ip = var.worker2_ip },
+    { name = "k8s-worker-03", ip = var.worker3_ip },  # ⭐ New node
   ]
 }
 

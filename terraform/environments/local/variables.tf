@@ -19,6 +19,10 @@ variable "worker2_ip" {
   default = "10.70.16.241"
 }
 
+variable "worker3_ip" {
+  default = "10.70.16.234"
+}
+
 variable "vm_user" {
   default = "vm"
 }
