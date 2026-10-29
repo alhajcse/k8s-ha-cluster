@@ -266,6 +266,9 @@ ssh vm@10.70.16.234 "sudo crictl info"
 > setting, and CRI plugin status before changing anything.
 
 ### 3.3 Prepare the VM with Ansible
+add new worker
+https://github.com/alhajcse/k8s-ha-cluster/blob/master/terraform/environments/local/main.tf
+https://github.com/alhajcse/k8s-ha-cluster/blob/master/terraform/environments/local/variables.tf
 
 From the repository root, run the playbook for `.234`:
 
