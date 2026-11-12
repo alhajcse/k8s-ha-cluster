@@ -1,346 +1,400 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" font-family="Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1620" font-family="Inter, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
   <defs>
-    <!-- Gradients -->
-    <linearGradient id="gradCP" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#3b82f6"/>
-      <stop offset="100%" stop-color="#1e40af"/>
-    </linearGradient>
-    <linearGradient id="gradWorker" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#fbbf24"/>
-      <stop offset="100%" stop-color="#d97706"/>
-    </linearGradient>
-    <linearGradient id="gradVIP" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#8b5cf6"/>
-      <stop offset="100%" stop-color="#6d28d9"/>
-    </linearGradient>
-    <linearGradient id="gradCalico" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#f97316"/>
-      <stop offset="100%" stop-color="#c2410c"/>
-    </linearGradient>
-    <linearGradient id="gradStorage" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#10b981"/>
-      <stop offset="100%" stop-color="#047857"/>
-    </linearGradient>
-    <linearGradient id="gradMonitor" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#ef4444"/>
-      <stop offset="100%" stop-color="#b91c1c"/>
-    </linearGradient>
-    <linearGradient id="gradClient" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#64748b"/>
-      <stop offset="100%" stop-color="#334155"/>
-    </linearGradient>
-    <linearGradient id="gradBG" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#f8fafc"/>
-      <stop offset="100%" stop-color="#e2e8f0"/>
+    <radialGradient id="bgGlow" cx="50%" cy="-10%" r="90%">
+      <stop offset="0%" stop-color="#0f1830"/>
+      <stop offset="60%" stop-color="#080d1a"/>
+      <stop offset="100%" stop-color="#04060d"/>
+    </radialGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#1e293b" stroke-width="0.5" opacity="0.3"/>
+    </pattern>
+
+    <linearGradient id="card" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#131b2e"/>
+      <stop offset="100%" stop-color="#0b1220"/>
     </linearGradient>
 
-    <!-- Shadows -->
-    <filter id="shadow" x="-5%" y="-5%" width="115%" height="115%">
-      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.2"/>
+    <linearGradient id="accentCP" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="accentWorker" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+    <linearGradient id="accentLB" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+    <linearGradient id="accentStorage" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="accentMonitor" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f43f5e"/><stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+    <linearGradient id="accentClient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#64748b"/><stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+    <linearGradient id="accentTraefik" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#14b8a6"/><stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+    <linearGradient id="accentAddon" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000000" flood-opacity="0.5"/>
     </filter>
-    <filter id="shadowSm" x="-5%" y="-5%" width="115%" height="115%">
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.15"/>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="20"/>
     </filter>
 
-    <!-- Arrow markers -->
-    <marker id="arrGray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M0,0 L10,5 L0,10 Z" fill="#64748b"/>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#475569"/>
     </marker>
-    <marker id="arrGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M0,0 L10,5 L0,10 Z" fill="#10b981"/>
-    </marker>
-    <marker id="arrOrange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M0,0 L10,5 L0,10 Z" fill="#f59e0b"/>
-    </marker>
-    <marker id="arrBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
       <path d="M0,0 L10,5 L0,10 Z" fill="#3b82f6"/>
     </marker>
-    <marker id="arrRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M0,0 L10,5 L0,10 Z" fill="#ef4444"/>
+    <marker id="arrowTeal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#14b8a6"/>
     </marker>
   </defs>
 
-  <!-- Background -->
-  <rect width="1600" height="1200" fill="url(#gradBG)"/>
+  <rect width="1600" height="1620" fill="url(#bgGlow)"/>
+  <rect width="1600" height="1620" fill="url(#grid)"/>
 
-  <!-- ═══════════════════════════════════════════════════ -->
-  <!-- TITLE -->
-  <!-- ═══════════════════════════════════════════════════ -->
-  <text x="800" y="45" text-anchor="middle" font-size="32" font-weight="bold" fill="#0f172a">
-    🏛️ K8s HA Cluster — Architecture
-  </text>
-  <text x="800" y="75" text-anchor="middle" font-size="15" fill="#64748b">
-    5 VM · 3 Control Plane + 2 Worker · Kubernetes v1.30 · Calico · Longhorn · MetalLB
-  </text>
+  <!-- ═══ HEADER ═══ -->
+  <text x="60" y="50" font-size="24" font-weight="700" fill="#f1f5f9" letter-spacing="-0.4">Kubernetes HA Cluster</text>
+  <text x="60" y="72" font-size="12" fill="#64748b" letter-spacing="0.2">Reference Architecture · v1.30.14 · 7 VMs · Calico · Longhorn · Traefik · Alloy · metrics-server</text>
 
-  <!-- ═══════════════════════════════════════════════════ -->
-  <!-- LAYER 1: CLIENT ACCESS -->
-  <!-- ═══════════════════════════════════════════════════ -->
-  <rect x="550" y="110" width="500" height="90" rx="12" fill="url(#gradClient)" filter="url(#shadow)"/>
-  <text x="800" y="145" text-anchor="middle" font-size="20" font-weight="bold" fill="#ffffff">
-    🖥️ CLIENT / ADMIN ACCESS
-  </text>
-  <text x="800" y="170" text-anchor="middle" font-size="14" fill="#cbd5e1">
-    kubectl · SSH · Browser UI · ArgoCD
-  </text>
-  <text x="800" y="190" text-anchor="middle" font-size="12" fill="#94a3b8">
-    https://x.x.x.237:6443
-  </text>
+  <text x="1540" y="40" text-anchor="end" font-size="9" fill="#475569" letter-spacing="2" font-weight="700">ARCHITECTURE DIAGRAM</text>
+  <text x="1540" y="58" text-anchor="end" font-size="11" fill="#64748b">2026 · Platform Engineering</text>
+  <text x="1540" y="74" text-anchor="end" font-size="10" fill="#334155" font-family="ui-monospace, 'SF Mono', Menlo, monospace">v1.3</text>
 
-  <!-- Arrow Client → VIP -->
-  <line x1="800" y1="200" x2="800" y2="245" stroke="#64748b" stroke-width="3" marker-end="url(#arrGray)"/>
+  <!-- ═══ 01 CLIENT ═══ -->
+  <text x="60" y="110" font-size="9" font-weight="700" fill="#64748b" letter-spacing="2">01 · CLIENT ACCESS</text>
+  <line x1="225" y1="106" x2="1540" y2="106" stroke="#1e293b" stroke-width="1"/>
 
-  <!-- ═══════════════════════════════════════════════════ -->
-  <!-- LAYER 2: VIP (kube-vip) -->
-  <!-- ═══════════════════════════════════════════════════ -->
-  <rect x="550" y="255" width="500" height="80" rx="12" fill="url(#gradVIP)" filter="url(#shadow)"/>
-  <text x="800" y="290" text-anchor="middle" font-size="20" font-weight="bold" fill="#ffffff">
-    ⚖️ kube-vip — Virtual IP
-  </text>
-  <text x="800" y="315" text-anchor="middle" font-size="14" fill="#e9d5ff">
-    VIP: x.x.x.237 · ARP-based leader election
-  </text>
+  <g filter="url(#shadow)">
+    <rect x="550" y="122" width="500" height="72" rx="8" fill="url(#card)" stroke="#1e293b" stroke-width="1"/>
+    <rect x="550" y="122" width="500" height="3" rx="1.5" fill="url(#accentClient)"/>
+  </g>
+  <circle cx="582" cy="149" r="4" fill="#94a3b8"/>
+  <text x="598" y="153" font-size="13" font-weight="600" fill="#f1f5f9">Client / Admin Access</text>
+  <text x="598" y="170" font-size="11" fill="#94a3b8">kubectl · SSH · Browser · ArgoCD · CI/CD</text>
+  <text x="598" y="186" font-size="10" fill="#64748b" font-family="ui-monospace, Menlo, monospace">API https://10.70.16.235:6443 · Apps http://10.70.16.235/</text>
 
-  <!-- Arrows VIP → 3 CPs -->
-  <line x1="650" y1="335" x2="250" y2="410" stroke="#3b82f6" stroke-width="3" marker-end="url(#arrBlue)"/>
-  <line x1="800" y1="335" x2="800" y2="410" stroke="#3b82f6" stroke-width="3" marker-end="url(#arrBlue)"/>
-  <line x1="950" y1="335" x2="1350" y2="410" stroke="#3b82f6" stroke-width="3" marker-end="url(#arrBlue)"/>
+  <line x1="800" y1="194" x2="800" y2="218" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-  <!-- ═══════════════════════════════════════════════════ -->
-  <!-- LAYER 3: CONTROL PLANE NODES (3) -->
-  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- ═══ 02 HAPROXY ═══ -->
+  <text x="60" y="250" font-size="9" font-weight="700" fill="#64748b" letter-spacing="2">02 · EDGE LOAD BALANCER</text>
+  <line x1="265" y1="246" x2="1540" y2="246" stroke="#1e293b" stroke-width="1"/>
+
+  <rect x="330" y="282" width="940" height="140" rx="10" fill="#a855f7" opacity="0.08" filter="url(#glow)"/>
+
+  <g filter="url(#shadow)">
+    <rect x="350" y="270" width="900" height="140" rx="8" fill="url(#card)" stroke="#3b2d5c" stroke-width="1"/>
+    <rect x="350" y="270" width="900" height="3" rx="1.5" fill="url(#accentLB)"/>
+  </g>
+  <circle cx="380" cy="300" r="4" fill="#a855f7"/>
+  <text x="396" y="304" font-size="14" font-weight="700" fill="#f1f5f9">HAProxy</text>
+  <text x="472" y="304" font-size="12" fill="#94a3b8" font-family="ui-monospace, Menlo, monospace">10.70.16.235</text>
+
+  <rect x="1140" y="288" width="96" height="20" rx="10" fill="#2e1065" stroke="#7c3aed" stroke-width="1"/>
+  <text x="1188" y="302" text-anchor="middle" font-size="9" font-weight="700" fill="#c4b5fd" letter-spacing="0.8">DEDICATED</text>
+
+  <text x="380" y="328" font-size="9" font-weight="700" fill="#64748b" letter-spacing="1.2">API FRONTEND</text>
+  <text x="380" y="346" font-size="11" fill="#cbd5e1" font-family="ui-monospace, Menlo, monospace">bind :6443 · TCP · GET /healthz</text>
+  <text x="380" y="364" font-size="11" fill="#94a3b8">→ cp1 .237 · cp2 .238 · cp3 .239</text>
+  <text x="380" y="380" font-size="10" fill="#475569">check-ssl verify none</text>
+
+  <line x1="800" y1="322" x2="800" y2="392" stroke="#1e293b" stroke-width="1" stroke-dasharray="2,3"/>
+
+  <text x="820" y="328" font-size="9" font-weight="700" fill="#64748b" letter-spacing="1.2">APPS FRONTEND</text>
+  <text x="820" y="346" font-size="11" fill="#cbd5e1" font-family="ui-monospace, Menlo, monospace">bind :80 · HTTP · GET /ping</text>
+  <text x="820" y="364" font-size="11" fill="#94a3b8">→ worker1 .240 · worker2 .241 · worker3 .234 :30080</text>
+  <text x="820" y="380" font-size="10" fill="#475569">Host whoami.lab.local · inter 3s fall 3 rise 2</text>
+
+  <text x="380" y="400" font-size="10" fill="#f59e0b">⚠ Single node — add keepalived + 2nd HAProxy for a true HA edge</text>
+
+  <line x1="600" y1="410" x2="380" y2="470" stroke="#3b82f6" stroke-width="1.5" opacity="0.55" marker-end="url(#arrowBlue)"/>
+  <line x1="800" y1="410" x2="800" y2="470" stroke="#3b82f6" stroke-width="1.5" opacity="0.55" marker-end="url(#arrowBlue)"/>
+  <line x1="1000" y1="410" x2="1220" y2="470" stroke="#3b82f6" stroke-width="1.5" opacity="0.55" marker-end="url(#arrowBlue)"/>
+
+  <path d="M420,410 C320,600 40,900 40,1410 Q40,1420 55,1420" fill="none" stroke="#14b8a6" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.55" marker-end="url(#arrowTeal)"/>
+
+  <!-- ═══ 03 CONTROL PLANE ═══ -->
+  <text x="60" y="460" font-size="9" font-weight="700" fill="#64748b" letter-spacing="2">03 · CONTROL PLANE</text>
+  <line x1="245" y1="456" x2="1540" y2="456" stroke="#1e293b" stroke-width="1"/>
 
   <!-- CP-01 -->
-  <rect x="100" y="420" width="300" height="240" rx="12" fill="#ffffff" stroke="#3b82f6" stroke-width="3" filter="url(#shadow)"/>
-  <rect x="100" y="420" width="300" height="55" rx="12" fill="url(#gradCP)"/>
-  <rect x="100" y="455" width="300" height="20" fill="url(#gradCP)"/>
-  <text x="250" y="450" text-anchor="middle" font-size="18" font-weight="bold" fill="#ffffff">
-    🔵 CP-01
-  </text>
-  <text x="250" y="470" text-anchor="middle" font-size="13" fill="#dbeafe">
-    x.x.x.237
-  </text>
-
-  <text x="115" y="500" font-size="13" font-weight="bold" fill="#1e293b">Components:</text>
-  <text x="115" y="522" font-size="12" fill="#475569">• kube-apiserver :6443</text>
-  <text x="115" y="542" font-size="12" fill="#475569">• kube-scheduler</text>
-  <text x="115" y="562" font-size="12" fill="#475569">• kube-controller-manager</text>
-  <text x="115" y="582" font-size="12" fill="#475569">• etcd :2379-2380</text>
-  <text x="115" y="602" font-size="12" fill="#475569">• kubelet :10250</text>
-  <text x="115" y="622" font-size="12" fill="#475569">• kube-vip (leader)</text>
-  <text x="115" y="642" font-size="12" fill="#475569">• calico-node</text>
+  <g filter="url(#shadow)">
+    <rect x="60" y="480" width="440" height="252" rx="8" fill="url(#card)" stroke="#1e293b" stroke-width="1"/>
+    <rect x="60" y="480" width="440" height="3" rx="1.5" fill="url(#accentCP)"/>
+  </g>
+  <circle cx="88" cy="508" r="4" fill="#3b82f6"/>
+  <text x="104" y="512" font-size="13" font-weight="700" fill="#f1f5f9">CP-01</text>
+  <text x="152" y="512" font-size="11" fill="#64748b">node3-vm-01</text>
+  <text x="472" y="512" font-size="11" fill="#38bdf8" font-family="ui-monospace, Menlo, monospace" text-anchor="end">10.70.16.237</text>
+  <line x1="88" y1="526" x2="472" y2="526" stroke="#1e293b" stroke-width="1"/>
+  <text x="88" y="546" font-size="11" fill="#cbd5e1">kube-apiserver</text>
+  <text x="472" y="546" font-size="11" fill="#64748b" font-family="ui-monospace, Menlo, monospace" text-anchor="end">:6443</text>
+  <text x="88" y="564" font-size="11" fill="#cbd5e1">kube-scheduler</text>
+  <text x="88" y="582" font-size="11" fill="#cbd5e1">kube-controller-manager</text>
+  <text x="88" y="600" font-size="11" fill="#cbd5e1">etcd</text>
+  <text x="472" y="600" font-size="11" fill="#64748b" font-family="ui-monospace, Menlo, monospace" text-anchor="end">:2379-2380</text>
+  <text x="88" y="618" font-size="11" fill="#cbd5e1">kubelet</text>
+  <text x="472" y="618" font-size="11" fill="#64748b" font-family="ui-monospace, Menlo, monospace" text-anchor="end">:10250</text>
+  <text x="88" y="636" font-size="11" fill="#cbd5e1">calico-node · kube-proxy</text>
+  <line x1="88" y1="650" x2="472" y2="650" stroke="#1e293b" stroke-width="1"/>
+  <text x="88" y="668" font-size="10" fill="#64748b" font-family="ui-monospace, Menlo, monospace">containerd 2.3.6 · kernel 6.8.0-146</text>
+  <text x="88" y="684" font-size="10" fill="#64748b" font-family="ui-monospace, Menlo, monospace">K8s v1.30.14 · Ubuntu 24.04.5</text>
+  <rect x="88" y="698" width="86" height="18" rx="9" fill="#0c4a6e" stroke="#0284c7" stroke-width="1"/>
+  <text x="131" y="711" text-anchor="middle" font-size="9" font-weight="700" fill="#7dd3fc" letter-spacing="0.5">ETCD PEER</text>
 
   <!-- CP-02 -->
-  <rect x="650" y="420" width="300" height="240" rx="12" fill="#ffffff" stroke="#3b82f6" stroke-width="3" filter="url(#shadow)"/>
-  <rect x="650" y="420" width="300" height="55" rx="12" fill="url(#gradCP)"/>
-  <rect x="650" y="455" width="300" height="20" fill="url(#gradCP)"/>
-  <text x="800" y="450" text-anchor="middle" font-size="18" font-weight="bold" fill="#ffffff">
-    🔵 CP-02
-  </text>
-  <text x="800" y="470" text-anchor="middle" font-size="13" fill="#dbeafe">
-    x.x.x.238
-  </text>
-
-  <text x="665" y="500" font-size="13" font-weight="bold" fill="#1e293b">Components:</text>
-  <text x="665" y="522" font-size="12" fill="#475569">• kube-apiserver :6443</text>
-  <text x="665" y="542" font-size="12" fill="#475569">• kube-scheduler</text>
-  <text x="665" y="562" font-size="12" fill="#475569">• kube-controller-manager</text>
-  <text x="665" y="582" font-size="12" fill="#475569">• etcd :2379-2380</text>
-  <text x="665" y="602" font-size="12" fill="#475569">• kubelet :10250</text>
-  <text x="665" y="622" font-size="12" fill="#475569">• kube-vip (standby)</text>
-  <text x="665" y="642" font-size="12" fill="#475569">• calico-node</text>
+  <g filter="url(#shadow)">
+    <rect x="580" y="480" width="440" height="252" rx="8" fill="url(#card)" stroke="#1e293b" stroke-width="1"/>
+    <rect x="580" y="480" width="440" height="3" rx="1.5" fill="url(#accentCP)"/>
+  </g>
+  <circle cx="608" cy="508" r="4" fill="#3b82f6"/>
+  <text x="624" y="512" font-size="13" font-weight="700" fill="#f1f5f9">CP-02</text>
+  <text x="672" y="512" font-size="11" fill="#64748b">k8s-cp-02</text>
+  <text x="992" y="512" font-size="11" fill="#38bdf8" font-family="ui-monospace, Menlo, monospace" text-anchor="end">10.70.16.238</text>
+  <line x1="608" y1="526" x2="992" y2="526" stroke="#1e293b" stroke-width="1"/>
+  <text x="608" y="546" font-size="11" fill="#cbd5e1">kube-apiserver</text>
+  <text x="992" y="546" font-size="11" fill="#64748b" font-family="ui-monospace, Menlo, monospace" text-anchor="end">:6443</text>
+  <text x="608" y="564" font-size="11" fill="#cbd5e1">kube-scheduler</text>
+  <text x="608" y="582" font-size="11" fill="#cbd5e1">kube-controller-manager</text>
+  <text x="608" y="600" font-size="11" fill="#cbd5e1">etcd</text>
+  <text x="992" y="600" font-size="11" fill="#64748b" font-family="ui-monospace, Menlo, monospace" text-anchor="end">:2379-2380</text>
+  <text x="608" y="618" font-size="11" fill="#cbd5e1">kubelet</text>
+  <text x="992" y="618" font-size="11" fill="#64748b" font-family="ui-monospace, Menlo, monospace" text-anchor="end">:10250</text>
+  <text x="608" y="636" font-size="11" fill="#cbd5e1">calico-node · kube-proxy</text>
+  <line x1="608" y1="650" x2="992" y2="650" stroke="#1e293b" stroke-width="1"/>
+  <text x="608" y="668" font-size="10" fill="#64748b" font-family="ui-monospace, Menlo, monospace">containerd 2.3.6 · kernel 6.8.0-146</text>
+  <text x="608" y="684" font-size="10" fill="#64748b" font-family="ui-monospace, Menlo, monospace">K8s v1.30.14 · Ubuntu 24.04.5</text>
+  <rect x="608" y="698" width="86" height="18" rx="9" fill="#0c4a6e" stroke="#0284c7" stroke-width="1"/>
+  <text x="651" y="711" text-anchor="middle" font-size="9" font-weight="700" fill="#7dd3fc" letter-spacing="0.5">ETCD PEER</text>
 
   <!-- CP-03 -->
-  <rect x="1200" y="420" width="300" height="240" rx="12" fill="#ffffff" stroke="#3b82f6" stroke-width="3" filter="url(#shadow)"/>
-  <rect x="1200" y="420" width="300" height="55" rx="12" fill="url(#gradCP)"/>
-  <rect x="1200" y="455" width="300" height="20" fill="url(#gradCP)"/>
-  <text x="1350" y="450" text-anchor="middle" font-size="18" font-weight="bold" fill="#ffffff">
-    🔵 CP-03
-  </text>
-  <text x="1350" y="470" text-anchor="middle" font-size="13" fill="#dbeafe">
-    x.x.x.239
-  </text>
+  <g filter="url(#shadow)">
+    <rect x="1100" y="480" width="440" height="252" rx="8" fill="url(#card)" stroke="#1e293b" stroke-width="1"/>
+    <rect x="1100" y="480" width="440" height="3" rx="1.5" fill="url(#accentCP)"/>
+  </g>
+  <circle cx="1128" cy="508" r="4" fill="#3b82f6"/>
+  <text x="1144" y="512" font-size="13" font-weight="700" fill="#f1f5f9">CP-03</text>
+  <text x="1192" y="512" font-size="11" fill="#64748b">k8s-cp-03</text>
+  <text x="1512" y="512" font-size="11" fill="#38bdf8" font-family="ui-monospace, Menlo, monospace" text-anchor="end">10.70.16.239</text>
+  <line x1="1128" y1="526" x2="1512" y2="526" stroke="#1e293b" stroke-width="1"/>
+  <text x="1128" y="546" font-size="11" fill="#cbd5e1">kube-apiserver</text>
+  <text x="1512" y="546" font-size="11" fill="#64748b" font-family="ui-monospace, Menlo, monospace" text-anchor="end">:6443</text>
+  <text x="1128" y="564" font-size="11" fill="#cbd5e1">kube-scheduler</text>
+  <text x="1128" y="582" font-size="11" fill="#cbd5e1">kube-controller-manager</text>
+  <text x="1128" y="600" font-size="11" fill="#cbd5e1">etcd</text>
+  <text x="1512" y="600" font-size="11" fill="#64748b" font-family="ui-monospace, Menlo, monospace" text-anchor="end">:2379-2380</text>
+  <text x="1128" y="618" font-size="11" fill="#cbd5e1">kubelet</text>
+  <text x="1512" y="618" font-size="11" fill="#64748b" font-family="ui-monospace, Menlo, monospace" text-anchor="end">:10250</text>
+  <text x="1128" y="636" font-size="11" fill="#cbd5e1">calico-node · kube-proxy</text>
+  <line x1="1128" y1="650" x2="1512" y2="650" stroke="#1e293b" stroke-width="1"/>
+  <text x="1128" y="668" font-size="10" fill="#64748b" font-family="ui-monospace, Menlo, monospace">containerd 2.3.6 · kernel 6.8.0-146</text>
+  <text x="1128" y="684" font-size="10" fill="#64748b" font-family="ui-monospace, Menlo, monospace">K8s v1.30.14 · Ubuntu 24.04.5</text>
+  <rect x="1128" y="698" width="86" height="18" rx="9" fill="#0c4a6e" stroke="#0284c7" stroke-width="1"/>
+  <text x="1171" y="711" text-anchor="middle" font-size="9" font-weight="700" fill="#7dd3fc" letter-spacing="0.5">ETCD PEER</text>
 
-  <text x="1215" y="500" font-size="13" font-weight="bold" fill="#1e293b">Components:</text>
-  <text x="1215" y="522" font-size="12" fill="#475569">• kube-apiserver :6443</text>
-  <text x="1215" y="542" font-size="12" fill="#475569">• kube-scheduler</text>
-  <text x="1215" y="562" font-size="12" fill="#475569">• kube-controller-manager</text>
-  <text x="1215" y="582" font-size="12" fill="#475569">• etcd :2379-2380</text>
-  <text x="1215" y="602" font-size="12" fill="#475569">• kubelet :10250</text>
-  <text x="1215" y="622" font-size="12" fill="#475569">• kube-vip (standby)</text>
-  <text x="1215" y="642" font-size="12" fill="#475569">• calico-node</text>
+  <line x1="280" y1="742" x2="580" y2="742" stroke="#1e40af" stroke-width="1" stroke-dasharray="3,3" opacity="0.45"/>
+  <line x1="1020" y1="742" x2="1320" y2="742" stroke="#1e40af" stroke-width="1" stroke-dasharray="3,3" opacity="0.45"/>
+  <text x="800" y="746" text-anchor="middle" font-size="10" fill="#475569" letter-spacing="0.5">etcd quorum · 3 members · tolerates 1 failure</text>
 
-  <!-- etcd Cluster Connection (HA) -->
-  <line x1="400" y1="600" x2="650" y2="600" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="6,4"/>
-  <line x1="950" y1="600" x2="1200" y2="600" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="6,4"/>
-  <rect x="700" y="655" width="200" height="28" rx="6" fill="#f3e8ff" stroke="#8b5cf6" stroke-width="1"/>
-  <text x="800" y="674" text-anchor="middle" font-size="12" font-weight="bold" fill="#6d28d9">
-    🔄 etcd quorum (3-node)
-  </text>
+  <line x1="280" y1="752" x2="280" y2="780" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="800" y1="752" x2="800" y2="780" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1320" y1="752" x2="1320" y2="780" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-  <!-- ═══════════════════════════════════════════════════ -->
-  <!-- LAYER 4: WORKER NODES (2) -->
-  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- ═══ 04 WORKERS ═══ -->
+  <text x="60" y="802" font-size="9" font-weight="700" fill="#64748b" letter-spacing="2">04 · WORKER NODES</text>
+  <line x1="235" y1="798" x2="1540" y2="798" stroke="#1e293b" stroke-width="1"/>
 
-  <!-- Arrows from CPs to Workers (scheduler) -->
-  <line x1="250" y1="660" x2="400" y2="730" stroke="#fbbf24" stroke-width="3" marker-end="url(#arrOrange)"/>
-  <line x1="800" y1="660" x2="800" y2="730" stroke="#fbbf24" stroke-width="3" marker-end="url(#arrOrange)"/>
-  <line x1="1350" y1="660" x2="1200" y2="730" stroke="#fbbf24" stroke-width="3" marker-end="url(#arrOrange)"/>
+  <g filter="url(#shadow)">
+    <rect x="60" y="818" width="440" height="248" rx="8" fill="url(#card)" stroke="#1e293b" stroke-width="1"/>
+    <rect x="60" y="818" width="440" height="3" rx="1.5" fill="url(#accentWorker)"/>
+  </g>
+  <circle cx="88" cy="846" r="4" fill="#f59e0b"/>
+  <text x="104" y="850" font-size="13" font-weight="700" fill="#f1f5f9">Worker-01</text>
+  <text x="188" y="850" font-size="11" fill="#64748b">node4-vm-01</text>
+  <text x="472" y="850" font-size="11" fill="#fbbf24" font-family="ui-monospace, Menlo, monospace" text-anchor="end">10.70.16.240</text>
+  <line x1="88" y1="864" x2="472" y2="864" stroke="#1e293b" stroke-width="1"/>
+  <text x="88" y="884" font-size="11" fill="#cbd5e1">kubelet</text>
+  <text x="472" y="884" font-size="11" fill="#64748b" font-family="ui-monospace, Menlo, monospace" text-anchor="end">:10250</text>
+  <text x="88" y="902" font-size="11" fill="#cbd5e1">kube-proxy</text>
+  <text x="88" y="920" font-size="11" fill="#cbd5e1">calico-node</text>
+  <text x="88" y="938" font-size="11" fill="#cbd5e1">traefik</text>
+  <text x="472" y="938" font-size="11" fill="#64748b" font-family="ui-monospace, Menlo, monospace" text-anchor="end">NodePort :30080</text>
+  <text x="88" y="956" font-size="11" fill="#cbd5e1">longhorn-manager</text>
+  <text x="88" y="974" font-size="11" fill="#cbd5e1">longhorn-instance-manager</text>
+  <line x1="88" y1="988" x2="472" y2="988" stroke="#1e293b" stroke-width="1"/>
+  <text x="88" y="1006" font-size="10" fill="#64748b" font-family="ui-monospace, Menlo, monospace">containerd 2.3.6 · kernel 6.8.0-146</text>
+  <text x="88" y="1022" font-size="10" fill="#64748b" font-family="ui-monospace, Menlo, monospace">K8s v1.30.14 · Ubuntu 24.04.5</text>
+  <rect x="88" y="1034" width="118" height="18" rx="9" fill="#78350f" stroke="#d97706" stroke-width="1"/>
+  <text x="147" y="1047" text-anchor="middle" font-size="9" font-weight="700" fill="#fcd34d" letter-spacing="0.5">INGRESS TARGET</text>
 
-  <!-- Worker-01 -->
-  <rect x="300" y="740" width="400" height="220" rx="12" fill="#ffffff" stroke="#fbbf24" stroke-width="3" filter="url(#shadow)"/>
-  <rect x="300" y="740" width="400" height="55" rx="12" fill="url(#gradWorker)"/>
-  <rect x="300" y="775" width="400" height="20" fill="url(#gradWorker)"/>
-  <text x="500" y="770" text-anchor="middle" font-size="18" font-weight="bold" fill="#78350f">
-    🟡 Worker-01
-  </text>
-  <text x="500" y="790" text-anchor="middle" font-size="13" fill="#78350f">
-    x.x.x.240
-  </text>
+  <g filter="url(#shadow)">
+    <rect x="580" y="818" width="440" height="248" rx="8" fill="url(#card)" stroke="#1e293b" stroke-width="1"/>
+    <rect x="580" y="818" width="440" height="3" rx="1.5" fill="url(#accentWorker)"/>
+  </g>
+  <circle cx="608" cy="846" r="4" fill="#f59e0b"/>
+  <text x="624" y="850" font-size="13" font-weight="700" fill="#f1f5f9">Worker-02</text>
+  <text x="708" y="850" font-size="11" fill="#64748b">node4-vm-02</text>
+  <text x="992" y="850" font-size="11" fill="#fbbf24" font-family="ui-monospace, Menlo, monospace" text-anchor="end">10.70.16.241</text>
+  <line x1="608" y1="864" x2="992" y2="864" stroke="#1e293b" stroke-width="1"/>
+  <text x="608" y="884" font-size="11" fill="#cbd5e1">kubelet</text>
+  <text x="992" y="884" font-size="11" fill="#64748b" font-family="ui-monospace, Menlo, monospace" text-anchor="end">:10250</text>
+  <text x="608" y="902" font-size="11" fill="#cbd5e1">kube-proxy</text>
+  <text x="608" y="920" font-size="11" fill="#cbd5e1">calico-node</text>
+  <text x="608" y="938" font-size="11" fill="#cbd5e1">traefik</text>
+  <text x="992" y="938" font-size="11" fill="#64748b" font-family="ui-monospace, Menlo, monospace" text-anchor="end">NodePort :30080</text>
+  <text x="608" y="956" font-size="11" fill="#cbd5e1">longhorn-manager</text>
+  <text x="608" y="974" font-size="11" fill="#cbd5e1">longhorn-instance-manager</text>
+  <line x1="608" y1="988" x2="992" y2="988" stroke="#1e293b" stroke-width="1"/>
+  <text x="608" y="1006" font-size="10" fill="#64748b" font-family="ui-monospace, Menlo, monospace">containerd 2.3.6 · kernel 6.8.0-146</text>
+  <text x="608" y="1022" font-size="10" fill="#64748b" font-family="ui-monospace, Menlo, monospace">K8s v1.30.14 · Ubuntu 24.04.5</text>
+  <rect x="608" y="1034" width="118" height="18" rx="9" fill="#78350f" stroke="#d97706" stroke-width="1"/>
+  <text x="667" y="1047" text-anchor="middle" font-size="9" font-weight="700" fill="#fcd34d" letter-spacing="0.5">INGRESS TARGET</text>
 
-  <text x="315" y="820" font-size="13" font-weight="bold" fill="#1e293b">Components:</text>
-  <text x="315" y="842" font-size="12" fill="#475569">• kubelet :10250</text>
-  <text x="315" y="862" font-size="12" fill="#475569">• kube-proxy</text>
-  <text x="315" y="882" font-size="12" fill="#475569">• containerd :runtime</text>
-  <text x="315" y="902" font-size="12" fill="#475569">• calico-node</text>
-  <text x="315" y="922" font-size="12" fill="#475569">• longhorn-manager</text>
-  <text x="315" y="942" font-size="12" fill="#475569">• longhorn-instance-manager</text>
+  <g filter="url(#shadow)">
+    <rect x="1100" y="818" width="440" height="248" rx="8" fill="url(#card)" stroke="#1e293b" stroke-width="1"/>
+    <rect x="1100" y="818" width="440" height="3" rx="1.5" fill="url(#accentWorker)"/>
+  </g>
+  <circle cx="1128" cy="846" r="4" fill="#f59e0b"/>
+  <text x="1144" y="850" font-size="13" font-weight="700" fill="#f1f5f9">Worker-03</text>
+  <text x="1228" y="850" font-size="11" fill="#64748b">node1-vm-03</text>
+  <text x="1512" y="850" font-size="11" fill="#fbbf24" font-family="ui-monospace, Menlo, monospace" text-anchor="end">10.70.16.234</text>
+  <line x1="1128" y1="864" x2="1512" y2="864" stroke="#1e293b" stroke-width="1"/>
+  <text x="1128" y="884" font-size="11" fill="#cbd5e1">kubelet</text>
+  <text x="1512" y="884" font-size="11" fill="#64748b" font-family="ui-monospace, Menlo, monospace" text-anchor="end">:10250</text>
+  <text x="1128" y="902" font-size="11" fill="#cbd5e1">kube-proxy</text>
+  <text x="1128" y="920" font-size="11" fill="#cbd5e1">calico-node</text>
+  <text x="1128" y="938" font-size="11" fill="#cbd5e1">traefik</text>
+  <text x="1512" y="938" font-size="11" fill="#64748b" font-family="ui-monospace, Menlo, monospace" text-anchor="end">via kube-proxy</text>
+  <text x="1128" y="956" font-size="11" fill="#cbd5e1">longhorn-manager</text>
+  <text x="1128" y="974" font-size="11" fill="#cbd5e1">longhorn-instance-manager</text>
+  <line x1="1128" y1="988" x2="1512" y2="988" stroke="#1e293b" stroke-width="1"/>
+  <text x="1128" y="1006" font-size="10" fill="#f59e0b" font-family="ui-monospace, Menlo, monospace">containerd 2.4.2 · kernel 6.8.0-147</text>
+  <text x="1128" y="1022" font-size="10" fill="#64748b" font-family="ui-monospace, Menlo, monospace">K8s v1.30.14 · Ubuntu 24.04.5</text>
+  <rect x="1128" y="1034" width="118" height="18" rx="9" fill="#7c2d12" stroke="#ea580c" stroke-width="1"/>
+  <text x="1187" y="1047" text-anchor="middle" font-size="9" font-weight="700" fill="#fdba74" letter-spacing="0.5">RUNTIME DRIFT</text>
 
-  <!-- Worker-02 -->
-  <rect x="900" y="740" width="400" height="220" rx="12" fill="#ffffff" stroke="#fbbf24" stroke-width="3" filter="url(#shadow)"/>
-  <rect x="900" y="740" width="400" height="55" rx="12" fill="url(#gradWorker)"/>
-  <rect x="900" y="775" width="400" height="20" fill="url(#gradWorker)"/>
-  <text x="1100" y="770" text-anchor="middle" font-size="18" font-weight="bold" fill="#78350f">
-    🟡 Worker-02
-  </text>
-  <text x="1100" y="790" text-anchor="middle" font-size="13" fill="#78350f">
-    x.x.x.241
-  </text>
+  <!-- ═══ 05 CLUSTER ADD-ONS ═══ -->
+  <text x="60" y="1100" font-size="9" font-weight="700" fill="#64748b" letter-spacing="2">05 · CLUSTER ADD-ONS</text>
+  <line x1="245" y1="1096" x2="1540" y2="1096" stroke="#1e293b" stroke-width="1"/>
 
-  <text x="915" y="820" font-size="13" font-weight="bold" fill="#1e293b">Components:</text>
-  <text x="915" y="842" font-size="12" fill="#475569">• kubelet :10250</text>
-  <text x="915" y="862" font-size="12" fill="#475569">• kube-proxy</text>
-  <text x="915" y="882" font-size="12" fill="#475569">• containerd :runtime</text>
-  <text x="915" y="902" font-size="12" fill="#475569">• calico-node</text>
-  <text x="915" y="922" font-size="12" fill="#475569">• longhorn-manager</text>
-  <text x="915" y="942" font-size="12" fill="#475569">• longhorn-instance-manager</text>
+  <!-- CoreDNS -->
+  <g filter="url(#shadow)">
+    <rect x="60" y="1120" width="480" height="140" rx="8" fill="url(#card)" stroke="#1e293b" stroke-width="1"/>
+    <rect x="60" y="1120" width="480" height="3" rx="1.5" fill="url(#accentAddon)"/>
+  </g>
+  <circle cx="88" cy="1148" r="4" fill="#a78bfa"/>
+  <text x="104" y="1152" font-size="13" font-weight="700" fill="#f1f5f9">CoreDNS</text>
+  <text x="516" y="1152" font-size="11" fill="#64748b" font-family="ui-monospace, Menlo, monospace" text-anchor="end">2/2 running</text>
+  <text x="104" y="1168" font-size="10" fill="#64748b">kube-system · cluster DNS</text>
+  <line x1="88" y1="1182" x2="516" y2="1182" stroke="#1e293b" stroke-width="1"/>
+  <text x="88" y="1202" font-size="11" fill="#cbd5e1">Cluster DNS · Service 10.96.0.10:53</text>
+  <text x="88" y="1220" font-size="11" fill="#cbd5e1">Resolves &lt;svc&gt;.&lt;ns&gt;.svc.cluster.local</text>
+  <text x="88" y="1238" font-size="11" fill="#cbd5e1">2 replicas · PodDisruptionBudget</text>
 
-  <!-- ═══════════════════════════════════════════════════ -->
-  <!-- LAYER 5: STORAGE (Longhorn) -->
-  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- metrics-server -->
+  <g filter="url(#shadow)">
+    <rect x="560" y="1120" width="480" height="140" rx="8" fill="url(#card)" stroke="#4c1d95" stroke-width="1.5"/>
+    <rect x="560" y="1120" width="480" height="3" rx="1.5" fill="url(#accentAddon)"/>
+  </g>
+  <circle cx="588" cy="1148" r="4" fill="#a78bfa"/>
+  <text x="604" y="1152" font-size="13" font-weight="700" fill="#f1f5f9">metrics-server</text>
+  <text x="1016" y="1152" font-size="11" fill="#c4b5fd" font-family="ui-monospace, Menlo, monospace" text-anchor="end">1/1 running · 32d</text>
+  <text x="604" y="1168" font-size="10" fill="#64748b">kube-system · resource metrics API</text>
+  <line x1="588" y1="1182" x2="1016" y2="1182" stroke="#1e293b" stroke-width="1"/>
+  <text x="588" y="1202" font-size="11" fill="#cbd5e1">Scrapes kubelet :10250 on all 6 nodes</text>
+  <text x="588" y="1220" font-size="11" fill="#cbd5e1">Serves metrics.k8s.io/v1beta1</text>
+  <text x="588" y="1238" font-size="11" fill="#c4b5fd">Powers <tspan font-weight="700" fill="#a78bfa">kubectl top</tspan> + <tspan font-weight="700" fill="#a78bfa">HPA autoscaling</tspan></text>
 
-  <!-- Worker → Longhorn -->
-  <line x1="500" y1="960" x2="500" y2="1000" stroke="#10b981" stroke-width="3" marker-end="url(#arrGreen)"/>
-  <line x1="1100" y1="960" x2="1100" y2="1000" stroke="#10b981" stroke-width="3" marker-end="url(#arrGreen)"/>
+  <!-- calico-kube-controllers -->
+  <g filter="url(#shadow)">
+    <rect x="1060" y="1120" width="480" height="140" rx="8" fill="url(#card)" stroke="#1e293b" stroke-width="1"/>
+    <rect x="1060" y="1120" width="480" height="3" rx="1.5" fill="url(#accentAddon)"/>
+  </g>
+  <circle cx="1088" cy="1148" r="4" fill="#a78bfa"/>
+  <text x="1104" y="1152" font-size="13" font-weight="700" fill="#f1f5f9">calico-kube-controllers</text>
+  <text x="1516" y="1152" font-size="11" fill="#64748b" font-family="ui-monospace, Menlo, monospace" text-anchor="end">1/1 running</text>
+  <text x="1104" y="1168" font-size="10" fill="#64748b">kube-system · Calico control plane</text>
+  <line x1="1088" y1="1182" x2="1516" y2="1182" stroke="#1e293b" stroke-width="1"/>
+  <text x="1088" y="1202" font-size="11" fill="#cbd5e1">IPAM · NetworkPolicy · endpoints</text>
+  <text x="1088" y="1220" font-size="11" fill="#cbd5e1">Works with calico-node DaemonSet (6/6)</text>
+  <text x="1088" y="1238" font-size="11" fill="#cbd5e1">Maintains IPPool allocations</text>
 
-  <!-- Longhorn Storage Layer -->
-  <rect x="200" y="1010" width="1200" height="80" rx="12" fill="url(#gradStorage)" filter="url(#shadow)"/>
-  <text x="800" y="1045" text-anchor="middle" font-size="20" font-weight="bold" fill="#ffffff">
-    💾 Longhorn Storage (v1.7.3)
-  </text>
-  <text x="800" y="1070" text-anchor="middle" font-size="14" fill="#d1fae5">
-    2 Replicas · iSCSI :9501-9504 · Manager 5/5 · StorageClass: longhorn (default)
-  </text>
+  <!-- ═══ 06 PERSISTENT STORAGE ═══ -->
+  <text x="60" y="1300" font-size="9" font-weight="700" fill="#64748b" letter-spacing="2">06 · PERSISTENT STORAGE</text>
+  <line x1="265" y1="1296" x2="1540" y2="1296" stroke="#1e293b" stroke-width="1"/>
 
-  <!-- ═══════════════════════════════════════════════════ -->
-  <!-- LAYER 6: LOAD BALANCER (MetalLB) + Monitoring -->
-  <!-- ═══════════════════════════════════════════════════ -->
+  <g filter="url(#shadow)">
+    <rect x="60" y="1316" width="1480" height="72" rx="8" fill="url(#card)" stroke="#1e293b" stroke-width="1"/>
+    <rect x="60" y="1316" width="1480" height="3" rx="1.5" fill="url(#accentStorage)"/>
+  </g>
+  <circle cx="88" cy="1344" r="4" fill="#10b981"/>
+  <text x="104" y="1348" font-size="13" font-weight="700" fill="#f1f5f9">Longhorn</text>
+  <text x="190" y="1348" font-size="11" fill="#38bdf8" font-family="ui-monospace, Menlo, monospace">v1.7.3</text>
+  <text x="258" y="1348" font-size="11" fill="#94a3b8">StorageClass</text>
+  <text x="342" y="1348" font-size="11" fill="#10b981" font-family="ui-monospace, Menlo, monospace">longhorn</text>
+  <text x="405" y="1348" font-size="10" fill="#64748b">(default)</text>
+  <text x="88" y="1368" font-size="11" fill="#cbd5e1">2 replicas · iSCSI :9501-9504 · manager 5/5 · RWO volume binding · built-in backup to object storage</text>
 
-  <!-- Left Side: MetalLB -->
-  <rect x="100" y="1105" width="650" height="70" rx="10" fill="url(#gradCalico)" filter="url(#shadowSm)"/>
-  <text x="425" y="1135" text-anchor="middle" font-size="16" font-weight="bold" fill="#ffffff">
-    🌐 MetalLB — LoadBalancer
-  </text>
-  <text x="425" y="1158" text-anchor="middle" font-size="12" fill="#fed7aa">
-    IP Pool: x.x.x.250-x.x.x.254 · L2 Mode · Speaker 5/5
-  </text>
+  <!-- ═══ 07 PLATFORM SERVICES ═══ -->
+  <text x="60" y="1420" font-size="9" font-weight="700" fill="#64748b" letter-spacing="2">07 · PLATFORM SERVICES</text>
+  <line x1="255" y1="1416" x2="1540" y2="1416" stroke="#1e293b" stroke-width="1"/>
 
-  <!-- Right Side: Monitoring -->
-  <rect x="850" y="1105" width="650" height="70" rx="10" fill="url(#gradMonitor)" filter="url(#shadowSm)"/>
-  <text x="1175" y="1135" text-anchor="middle" font-size="16" font-weight="bold" fill="#ffffff">
-    📊 Monitoring Stack (Phase 7+)
-  </text>
-  <text x="1175" y="1158" text-anchor="middle" font-size="12" fill="#fecaca">
-    Prometheus · Grafana · Loki · Alertmanager · Dashboard
-  </text>
+  <g filter="url(#shadow)">
+    <rect x="60" y="1436" width="720" height="60" rx="8" fill="url(#card)" stroke="#1e293b" stroke-width="1"/>
+    <rect x="60" y="1436" width="720" height="3" rx="1.5" fill="url(#accentTraefik)"/>
+  </g>
+  <circle cx="88" cy="1464" r="4" fill="#14b8a6"/>
+  <text x="104" y="1468" font-size="13" font-weight="700" fill="#f1f5f9">Traefik</text>
+  <text x="175" y="1468" font-size="11" fill="#64748b">Ingress Controller</text>
+  <text x="104" y="1486" font-size="11" fill="#94a3b8">NodePort :30080 on all 3 workers · routes app pods via IngressRoute</text>
 
-  <!-- ═══════════════════════════════════════════════════ -->
-  <!-- LEGEND -->
-  <!-- ═══════════════════════════════════════════════════ -->
-  <rect x="1250" y="110" width="330" height="280" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" filter="url(#shadowSm)"/>
-  <text x="1415" y="140" text-anchor="middle" font-size="16" font-weight="bold" fill="#0f172a">
-    📖 Legend
-  </text>
+  <g filter="url(#shadow)">
+    <rect x="820" y="1436" width="720" height="60" rx="8" fill="url(#card)" stroke="#1e293b" stroke-width="1"/>
+    <rect x="820" y="1436" width="720" height="3" rx="1.5" fill="url(#accentMonitor)"/>
+  </g>
+  <circle cx="848" cy="1464" r="4" fill="#f43f5e"/>
+  <text x="864" y="1468" font-size="13" font-weight="700" fill="#f1f5f9">Observability</text>
+  <text x="968" y="1468" font-size="11" fill="#64748b">Metrics · Logs · Traces</text>
+  <text x="864" y="1486" font-size="11" fill="#94a3b8">Prometheus · Grafana · Loki · Alloy</text>
 
-  <!-- CP -->
-  <rect x="1270" y="160" width="20" height="20" rx="4" fill="url(#gradCP)"/>
-  <text x="1305" y="176" font-size="13" fill="#1e293b">Control Plane Node</text>
+  <!-- ═══ LEGEND ═══ -->
+  <line x1="60" y1="1526" x2="1540" y2="1526" stroke="#1e293b" stroke-width="1"/>
 
-  <!-- Worker -->
-  <rect x="1270" y="195" width="20" height="20" rx="4" fill="url(#gradWorker)"/>
-  <text x="1305" y="211" font-size="13" fill="#1e293b">Worker Node</text>
+  <text x="60" y="1548" font-size="9" font-weight="700" fill="#475569" letter-spacing="1.5">LEGEND</text>
 
-  <!-- VIP -->
-  <rect x="1270" y="230" width="20" height="20" rx="4" fill="url(#gradVIP)"/>
-  <text x="1305" y="246" font-size="13" fill="#1e293b">kube-vip / VIP</text>
+  <rect x="130" y="1538" width="10" height="10" rx="2" fill="#3b82f6"/>
+  <text x="146" y="1547" font-size="10" fill="#64748b">Control plane</text>
 
-  <!-- Storage -->
-  <rect x="1270" y="265" width="20" height="20" rx="4" fill="url(#gradStorage)"/>
-  <text x="1305" y="281" font-size="13" fill="#1e293b">Longhorn Storage</text>
+  <rect x="235" y="1538" width="10" height="10" rx="2" fill="#f59e0b"/>
+  <text x="251" y="1547" font-size="10" fill="#64748b">Worker</text>
 
-  <!-- MetalLB -->
-  <rect x="1270" y="300" width="20" height="20" rx="4" fill="url(#gradCalico)"/>
-  <text x="1305" y="316" font-size="13" fill="#1e293b">MetalLB / CNI</text>
+  <rect x="315" y="1538" width="10" height="10" rx="2" fill="#a78bfa"/>
+  <text x="331" y="1547" font-size="10" fill="#64748b">Cluster add-on</text>
 
-  <!-- Monitoring -->
-  <rect x="1270" y="335" width="20" height="20" rx="4" fill="url(#gradMonitor)"/>
-  <text x="1305" y="351" font-size="13" fill="#1e293b">Monitoring (coming)</text>
+  <rect x="425" y="1538" width="10" height="10" rx="2" fill="#a855f7"/>
+  <text x="441" y="1547" font-size="10" fill="#64748b">Edge LB</text>
 
-  <!-- Arrow types -->
-  <text x="1270" y="380" font-size="12" font-weight="bold" fill="#64748b">Arrows:</text>
+  <rect x="510" y="1538" width="10" height="10" rx="2" fill="#14b8a6"/>
+  <text x="526" y="1547" font-size="10" fill="#64748b">Ingress</text>
 
-  <line x1="1270" y1="395" x2="1330" y2="395" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrBlue)"/>
-  <text x="1340" y="399" font-size="11" fill="#64748b">API</text>
+  <rect x="593" y="1538" width="10" height="10" rx="2" fill="#10b981"/>
+  <text x="609" y="1547" font-size="10" fill="#64748b">Storage</text>
 
-  <!-- ═══════════════════════════════════════════════════ -->
-  <!-- INFO BOX — Network Details -->
-  <!-- ═══════════════════════════════════════════════════ -->
-  <rect x="30" y="110" width="490" height="280" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" filter="url(#shadowSm)"/>
-  <text x="275" y="140" text-anchor="middle" font-size="16" font-weight="bold" fill="#0f172a">
-    🔧 Network Details
-  </text>
+  <rect x="676" y="1538" width="10" height="10" rx="2" fill="#f43f5e"/>
+  <text x="692" y="1547" font-size="10" fill="#64748b">Observability</text>
 
-  <text x="55" y="170" font-size="13" font-weight="bold" fill="#1e293b">Pod CIDR:</text>
-  <text x="175" y="170" font-size="13" fill="#475569">10.244.0.0/16</text>
+  <line x1="796" y1="1543" x2="826" y2="1543" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="836" y="1547" font-size="10" fill="#64748b">Traffic flow</text>
 
-  <text x="55" y="195" font-size="13" font-weight="bold" fill="#1e293b">Service CIDR:</text>
-  <text x="175" y="195" font-size="13" fill="#475569">10.96.0.0/12</text>
+  <text x="1540" y="1547" text-anchor="end" font-size="10" fill="#475569">HA control plane · HAProxy edge is the only SPOF · metrics-server powers HPA</text>
 
-  <text x="55" y="220" font-size="13" font-weight="bold" fill="#1e293b">CNI:</text>
-  <text x="175" y="220" font-size="13" fill="#475569">Calico v3.28 (IPIP)</text>
-
-  <text x="55" y="245" font-size="13" font-weight="bold" fill="#1e293b">Runtime:</text>
-  <text x="175" y="245" font-size="13" fill="#475569">containerd 2.x</text>
-
-  <text x="55" y="270" font-size="13" font-weight="bold" fill="#1e293b">OS:</text>
-  <text x="175" y="270" font-size="13" fill="#475569">Ubuntu 24.04 LTS</text>
-
-  <text x="55" y="295" font-size="13" font-weight="bold" fill="#1e293b">K8s Version:</text>
-  <text x="175" y="295" font-size="13" fill="#475569">v1.30.0</text>
-
-  <text x="55" y="320" font-size="13" font-weight="bold" fill="#1e293b">Storage:</text>
-  <text x="175" y="320" font-size="13" fill="#475569">Longhorn v1.7.3</text>
-
-  <text x="55" y="345" font-size="13" font-weight="bold" fill="#1e293b">Ingress:</text>
-  <text x="175" y="345" font-size="13" fill="#475569">MetalLB (L2)</text>
-
-  <text x="55" y="370" font-size="13" font-weight="bold" fill="#1e293b">NodePort:</text>
-  <text x="175" y="370" font-size="13" fill="#475569">30000-32767</text>
-
-  <!-- ═══════════════════════════════════════════════════ -->
-  <!-- FOOTER -->
-  <!-- ═══════════════════════════════════════════════════ -->
-  <text x="800" y="1195" text-anchor="middle" font-size="11" fill="#94a3b8">
-    Last Updated: 2026 · Production-Ready HA Cluster · Phase 6 Complete (Longhorn Working)
-  </text>
+  <text x="60" y="1578" font-size="10" fill="#334155">K8s v1.30.14 · Calico v3.28 (IPIP) · Longhorn v1.7.3 · Traefik · Alloy · metrics-server · Ubuntu 24.04.5 LTS</text>
+  <text x="1540" y="1578" text-anchor="end" font-size="10" fill="#334155">platform-eng / architecture / k8s-ha.svg · v1.3</text>
 </svg>
